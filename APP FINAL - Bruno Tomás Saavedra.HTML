@@ -1,0 +1,3391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Calculadora de Indemnizaciones DTSS Cat B 2026 FD UNC | Hecho por Saavedra, Bruno Tomás, Practico 2do Parcial Dr. Paz</title>
+  <style>
+    :root {
+      /* Fondos en gama papel jurídico cálido (Marfil y Pergamino Pastel) */
+      --bg-pastel: #f2efe9;           /* Pergamino piedra suave */
+      --card-bg: #ffffff;             /* Hoja principal blanca */
+      
+      /* Azul Oxford / Pizarra Pastel (Identidad Jurídica Principal) */
+      --primary-legal: #3d5265;       /* Azul pizarra con alto contraste de lectura */
+      --primary-light: #e8eff5;       /* Azul pastel sereno para cabeceras y pistas */
+      
+      /* Bordó Académico UNC en clave Pastel */
+      --accent-bordo: #7d4352;        /* Bordó UNC definido para títulos y total */
+      --accent-bordo-light: #f6ecef;  /* Rosa/bordó pastel muy tenue para agravamientos */
+      
+      /* Verde Salvia Pastel (Exclusivo para el Resultado Final) */
+      --sage-pastel: #e2ede6;         /* Salvia pastel luminoso */
+      --sage-border: #5c8069;         /* Verde salvia seco para el marco de resultados */
+      
+      /* Ámbar / Arena Pastel (Para Tope Gremial y Razonamiento) */
+      --amber-pastel: #f8f3e8;        /* Arena pastel cálido */
+      --amber-border: #b88f56;        /* Dorado viejo / ocre jurídico */
+      
+      /* Gris Pizarra Pastel (Sobriedad en el bloque de Multas) */
+      --violet-pastel: #eef1f5;       /* Gris azulado pastel sobrio */
+      --violet-border: #546778;       /* Pizarra medio */
+      
+      /* Alertas y Tipografía */
+      --error-bg: #fcedec;            /* Coral/rojo pastel suave */
+      --error-border: #b84444;        /* Rojo lacre jurídico */
+      --text-main: #222930;           /* Tinta negra-azulada para máxima legibilidad */
+      --text-muted: #5e6b78;          /* Gris plomo suave para subtítulos */
+      --border-soft: #d8d4cc;         /* Borde piedra cálido */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: rgba(125, 67, 82, 0.15);
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background-color: var(--bg-pastel);
+      color: var(--text-main);
+      line-height: 1.55;
+      padding: 1.2rem 0.75rem;
+      overflow-x: hidden;
+    }
+
+    input, select, button, textarea, label, summary, a {
+      font-family: 'Times New Roman', Times, serif;
+      touch-action: manipulation;
+    }
+
+    input, select, textarea {
+      -webkit-user-select: text !important;
+      -moz-user-select: text !important;
+      user-select: text !important;
+    }
+
+    .app-container {
+      max-width: 980px;
+      margin: 0 auto;
+      background-color: var(--card-bg);
+      border-radius: 14px;
+      box-shadow: 0 10px 32px rgba(34, 41, 48, 0.12);
+      border-top: 8px solid var(--accent-bordo);
+      overflow: hidden;
+    }
+
+    .visor-warning-banner {
+      background-color: #fff4e5;
+      border-bottom: 2px solid #d9822b;
+      color: #5c3709;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    #securityToast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #222930;
+      color: #ffffff;
+      padding: 0.75rem 1.15rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      border-left: 4px solid var(--accent-bordo);
+      z-index: 9999;
+      display: none;
+      text-align: center;
+      width: 90vw;
+      max-width: 460px;
+    }
+
+    header {
+      background-color: var(--primary-light);
+      padding: 1.5rem 1.1rem;
+      border-bottom: 1px solid var(--border-soft);
+      text-align: center;
+    }
+
+    .badge-unc {
+      display: inline-block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background-color: var(--accent-bordo);
+      color: #ffffff;
+      padding: 0.3rem 0.85rem;
+      border-radius: 20px;
+      margin-bottom: 0.65rem;
+    }
+
+    header h1 {
+      font-size: 1.45rem;
+      color: var(--text-main);
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      line-height: 1.3;
+    }
+
+    header h2 {
+      font-size: 1.05rem;
+      color: var(--accent-bordo);
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .content-body {
+      padding: 1.4rem;
+    }
+
+    .section-box {
+      background-color: #faf9f6;
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 0.35rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .section-title {
+      font-size: 1.12rem;
+      color: var(--primary-legal);
+      margin: 0;
+      border: none;
+      padding: 0;
+    }
+
+    .btn-date-mode {
+      background-color: var(--primary-light);
+      color: var(--primary-legal);
+      border: 1px solid var(--primary-legal);
+      border-radius: 6px;
+      padding: 0.32rem 0.7rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .section-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    /* Grillas simétricas y alineadas */
+    .grid-inputs-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.1rem;
+      align-items: stretch;
+    }
+
+    .grid-inputs-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.1rem;
+      align-items: stretch;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .form-group > label {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      line-height: 1.28;
+      min-height: 2.6em;
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: 0.4rem;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      padding: 0.7rem 0.85rem;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #ffffff;
+      color: var(--text-main);
+      width: 100%;
+      height: 48px;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--primary-legal);
+      box-shadow: 0 0 0 3px rgba(61, 82, 101, 0.16);
+    }
+
+    input.input-error {
+      border-color: var(--error-border) !important;
+      background-color: var(--error-bg) !important;
+    }
+
+    .preview-hint {
+      font-size: 0.84rem;
+      color: var(--text-main);
+      font-weight: 600;
+      margin-top: 0.4rem;
+      background-color: var(--primary-light);
+      border-left: 3px solid var(--primary-legal);
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      min-height: 34px;
+      width: 100%;
+    }
+
+    .limit-alert-hint {
+      font-size: 0.86rem;
+      color: #63323f;
+      background-color: var(--accent-bordo-light);
+      border-left: 3px solid var(--accent-bordo);
+      padding: 0.55rem 0.75rem;
+      border-radius: 4px;
+      margin-top: 0.4rem;
+      grid-column: 1 / -1;
+    }
+
+    .error-validation-box {
+      display: none;
+      font-size: 0.88rem;
+      color: #7d1d1d;
+      background-color: var(--error-bg);
+      border: 1px solid var(--error-border);
+      border-left: 5px solid var(--error-border);
+      padding: 0.75rem 0.9rem;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+      margin-bottom: 0.8rem;
+      grid-column: 1 / -1;
+      font-weight: 600;
+    }
+
+    .permanent-feature-box {
+      margin-top: 1.1rem;
+      padding: 0.95rem 1.1rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--amber-border);
+      background-color: var(--amber-pastel);
+      font-size: 0.9rem;
+    }
+
+    .permanent-feature-box.alert-negro {
+      border-color: var(--error-border);
+      background-color: var(--error-bg);
+      color: #7a1c1c;
+    }
+
+    .permanent-feature-box.blue-box {
+      border-color: var(--primary-legal);
+      background-color: var(--primary-light);
+    }
+
+    .inline-checks-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-top: 0.55rem;
+    }
+
+    .check-option-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background-color: #ffffff;
+      border: 1.5px solid var(--border-soft);
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .check-option-pill input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent-bordo);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .checkbox-card {
+      position: relative;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      background-color: #ffffff;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .checkbox-card.active-agravamiento {
+      background-color: var(--accent-bordo-light);
+      border-color: var(--accent-bordo);
+    }
+
+    .checkbox-card.active-atenuada {
+      background-color: var(--primary-light);
+      border-color: var(--primary-legal);
+    }
+
+    .checkbox-card.active-multas {
+      background-color: var(--violet-pastel);
+      border-color: var(--violet-border);
+    }
+
+    .checkbox-card.active-tope {
+      background-color: var(--amber-pastel);
+      border-color: var(--amber-border);
+    }
+
+    .chk-main-toggle {
+      position: absolute;
+      left: 1.1rem;
+      top: 1.15rem;
+      width: 22px;
+      height: 22px;
+      accent-color: var(--accent-bordo);
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .touch-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding-left: 2.2rem;
+      min-height: 28px;
+      margin-bottom: 0;
+    }
+
+    .touch-header-row .title-chk {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-main);
+    }
+
+    .exclusion-pill {
+      font-size: 0.76rem;
+      background-color: #eef2f5;
+      color: var(--primary-legal);
+      padding: 0.22rem 0.65rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      font-weight: 700;
+    }
+
+    .exclusion-pill.pill-active {
+      background-color: var(--accent-bordo);
+      color: #ffffff;
+      border-color: var(--accent-bordo);
+    }
+
+    .exclusion-pill.pill-excluded {
+      background-color: var(--error-bg);
+      color: #8a1f1f;
+      border-color: var(--error-border);
+    }
+
+    .dynamic-panel {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border-soft);
+    }
+
+    .chk-main-toggle:checked ~ .dynamic-panel {
+      display: block !important;
+    }
+
+    .agravamiento-selector-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .radio-agrav-input {
+      display: none;
+    }
+
+    .radio-agrav-label {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      background-color: #ffffff;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 0.75rem 0.9rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text-main);
+    }
+
+    .radio-agrav-label::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--primary-legal);
+      flex-shrink: 0;
+      display: inline-block;
+      background-color: #ffffff;
+    }
+
+    #agrav_embarazo:checked ~ label[for="agrav_embarazo"],
+    #agrav_matrimonio:checked ~ label[for="agrav_matrimonio"],
+    #agrav_discriminatorio:checked ~ label[for="agrav_discriminatorio"],
+    #agrav_enfermedad:checked ~ label[for="agrav_enfermedad"],
+    #agrav_tutela:checked ~ label[for="agrav_tutela"] {
+      background-color: #ffffff;
+      border-color: var(--accent-bordo);
+      box-shadow: 0 2px 8px rgba(125, 67, 82, 0.15);
+    }
+
+    #agrav_embarazo:checked ~ label[for="agrav_embarazo"]::before,
+    #agrav_matrimonio:checked ~ label[for="agrav_matrimonio"]::before,
+    #agrav_discriminatorio:checked ~ label[for="agrav_discriminatorio"]::before,
+    #agrav_enfermedad:checked ~ label[for="agrav_enfermedad"]::before,
+    #agrav_tutela:checked ~ label[for="agrav_tutela"]::before {
+      background-color: var(--accent-bordo);
+      border-color: var(--accent-bordo);
+      box-shadow: inset 0 0 0 3px #ffffff;
+    }
+
+    .sub-panel-box {
+      display: none;
+      margin-top: 0.6rem;
+      margin-bottom: 0.4rem;
+      padding: 1rem;
+      background-color: #ffffff;
+      border: 1.5px solid var(--accent-bordo);
+      border-radius: 8px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.1rem;
+      align-items: stretch;
+    }
+
+    #agrav_discriminatorio:checked ~ #subPanelDiscriminatorio {
+      display: grid !important;
+    }
+
+    #agrav_enfermedad:checked ~ #subPanelEnfermedad {
+      display: grid !important;
+    }
+
+    #agrav_tutela:checked ~ #subPanelTutela {
+      display: grid !important;
+    }
+
+    .multa-SubInput-box {
+      display: none;
+      margin: 0.35rem 0 0.85rem 0.5rem;
+      padding: 0.75rem;
+      background-color: var(--violet-pastel);
+      border-left: 3px solid var(--violet-border);
+      border-radius: 6px;
+      flex-direction: column;
+    }
+
+    #chkLNE9:checked ~ #boxInputLNE9 {
+      display: flex !important;
+    }
+
+    #chkLNE10:checked ~ #boxInputLNE10 {
+      display: flex !important;
+    }
+
+    .multas-status-banner {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid var(--violet-border);
+      background-color: var(--violet-pastel);
+      color: var(--text-main);
+    }
+
+    .multas-status-banner.bloqueado {
+      background-color: var(--amber-pastel);
+      border-left-color: var(--amber-border);
+      color: #5c3709;
+    }
+
+    .reparacion-integral-box {
+      display: block;
+      margin-bottom: 1rem;
+      padding: 0.85rem 1rem;
+      background-color: var(--amber-pastel);
+      border: 1.5px solid var(--amber-border);
+      border-radius: 8px;
+      font-size: 0.88rem;
+    }
+
+    .multas-subgrid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.1rem;
+      margin-top: 0.8rem;
+    }
+
+    .multa-block {
+      background-color: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .multa-block h4 {
+      font-size: 0.98rem;
+      color: var(--violet-border);
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .multa-item-wrap {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0.6rem;
+    }
+
+    .multa-chk-input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--violet-border);
+      margin-right: 0.55rem;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    .multa-item-label {
+      font-size: 0.9rem;
+      font-weight: normal;
+      cursor: pointer;
+      line-height: 1.45;
+    }
+
+    .tope-live-summary {
+      margin-top: 1rem;
+      background-color: #ffffff;
+      border: 1px solid var(--amber-border);
+      border-left: 4px solid var(--amber-border);
+      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    .action-buttons-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 0.9rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .btn-calculate {
+      width: 100%;
+      min-height: 56px;
+      padding: 1rem;
+      font-size: 1.14rem;
+      font-weight: bold;
+      color: #ffffff;
+      background-color: #3a4f63;
+      border: none;
+      border-bottom: 4px solid var(--accent-bordo);
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(58, 79, 99, 0.25);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn-calculate:hover {
+      background-color: #2f4152;
+    }
+
+    .btn-clear {
+      width: 100%;
+      min-height: 56px;
+      padding: 1rem;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--text-main);
+      background-color: #e8e4dc;
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .btn-calculate:active,
+    .btn-clear:active {
+      transform: scale(0.98);
+    }
+
+    .pdf-Config-bar {
+      background-color: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.2rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .btn-pdf {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.2rem;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: #ffffff;
+      background-color: var(--accent-bordo);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      height: 48px;
+      text-align: center;
+    }
+
+    .results-area {
+      display: none;
+      background-color: var(--sage-pastel);
+      border: 1.5px solid var(--sage-border);
+      border-radius: 10px;
+      padding: 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .total-banner {
+      text-align: center;
+      background-color: #ffffff;
+      padding: 1.2rem;
+      border-radius: 8px;
+      border-left: 6px solid var(--accent-bordo);
+      margin-bottom: 1.1rem;
+    }
+
+    .total-banner .label-total {
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .total-banner .amount-total {
+      font-size: 1.95rem;
+      color: var(--accent-bordo);
+      font-weight: bold;
+      margin-top: 0.25rem;
+      word-break: break-word;
+    }
+
+    .total-nominal-sub {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+      display: none;
+    }
+
+    .composition-box {
+      background-color: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .composition-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--primary-legal);
+      margin-bottom: 0.5rem;
+    }
+
+    .comp-bar-track {
+      width: 100%;
+      height: 18px;
+      background-color: #eef2f5;
+      border-radius: 9px;
+      overflow: hidden;
+      display: flex;
+      margin-bottom: 0.55rem;
+    }
+
+    .comp-seg-indem { background-color: var(--primary-legal); height: 100%; }
+    .comp-seg-deven { background-color: var(--sage-border); height: 100%; }
+    .comp-seg-extra { background-color: var(--accent-bordo); height: 100%; }
+
+    .comp-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-main);
+    }
+
+    .comp-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .partials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .partial-card {
+      background-color: #ffffff;
+      padding: 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
+      text-align: center;
+    }
+
+    .partial-card.obligatorio-card { border-top: 3px solid var(--primary-legal); }
+    .partial-card.cordoba-card { border-top: 3px solid var(--accent-bordo); background-color: #fffafb; }
+    .partial-card.multas-card { border-top: 3px solid var(--violet-border); background-color: #f8fafc; }
+
+    .partial-card h4 {
+      font-size: 0.78rem;
+      color: var(--primary-legal);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+    }
+
+    .partial-card .partial-value {
+      font-size: 1.12rem;
+      font-weight: bold;
+      color: var(--text-main);
+      word-break: break-word;
+    }
+
+    .partial-card .partial-norm {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    details.custom-dropdown {
+      background-color: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    details.custom-dropdown summary {
+      padding: 0.95rem 1.1rem;
+      background-color: var(--primary-light);
+      color: var(--text-main);
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    details.custom-dropdown.reasoning-box summary {
+      background-color: var(--amber-pastel);
+      border-left: 4px solid var(--amber-border);
+    }
+
+    details.custom-dropdown summary::-webkit-details-marker { display: none; }
+    details.custom-dropdown summary::after { content: "▼ Abrir explicación"; font-size: 0.82rem; color: var(--primary-legal); }
+    details.custom-dropdown[open] summary::after { content: "▲ Cerrar explicación"; }
+
+    .dropdown-content {
+      padding: 1.1rem;
+      font-size: 0.94rem;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .formula-step {
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px dashed var(--border-soft);
+    }
+
+    .formula-step:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .formula-code {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #f4f6f8;
+      padding: 0.45rem 0.65rem;
+      border-radius: 4px;
+      display: block;
+      margin-top: 0.35rem;
+      color: #2c353d;
+      font-weight: 600;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .reasoning-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .reasoning-list li {
+      background-color: #fcfaf7;
+      border-left: 3px solid var(--amber-border);
+      padding: 0.75rem 0.9rem;
+      border-radius: 0 6px 6px 0;
+    }
+
+    .social-institutional-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+      padding: 1.3rem 1.5rem;
+      background-color: var(--primary-light);
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .icon-link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background-color: #ffffff;
+      border: 1px solid var(--border-soft);
+      padding: 0.85rem 0.95rem;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .icon-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #ffffff;
+    }
+
+    .icon-circle.unc-icon { background-color: var(--accent-bordo); }
+    .icon-circle.ig-icon { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+    .icon-circle.gmail-icon { background-color: var(--primary-legal); }
+
+    .icon-card-text { display: flex; flex-direction: column; min-width: 0; }
+    .icon-card-text span.small-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 700; }
+    .icon-card-text strong { font-size: 0.88rem; color: var(--text-main); word-break: break-all; }
+
+    .disclaimer-box {
+      background-color: #f7f4ee;
+      padding: 1.2rem 1.5rem;
+      border-top: 1px solid var(--border-soft);
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      text-align: justify;
+      line-height: 1.5;
+    }
+
+    .disclaimer-box strong { color: var(--accent-bordo); }
+
+    footer {
+      text-align: center;
+      padding: 0.9rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-soft);
+      background-color: #faf9f6;
+    }
+
+    @media (max-width: 860px) {
+      .social-institutional-bar,
+      .pdf-Config-bar,
+      .action-buttons-row,
+      .inline-checks-row {
+        grid-template-columns: 1fr;
+      }
+      .btn-pdf { width: 100%; height: auto; min-height: 48px; }
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 0.45rem 0.35rem; }
+      header { padding: 1.2rem 0.9rem; }
+      header h1 { font-size: 1.2rem; }
+      header h2 { font-size: 0.96rem; }
+      .content-body { padding: 0.9rem; }
+      .section-box { padding: 0.95rem; margin-bottom: 1rem; }
+      .grid-inputs-3,
+      .grid-inputs-2,
+      .sub-panel-box,
+      .multas-subgrid {
+        grid-template-columns: 1fr;
+      }
+      .form-group > label {
+        min-height: 0;
+      }
+      .partials-grid { grid-template-columns: repeat(2, 1fr); }
+      .total-banner .amount-total { font-size: 1.55rem; }
+      details.custom-dropdown summary { flex-direction: column; align-items: flex-start; }
+      .social-institutional-bar, .disclaimer-box { padding: 1rem 0.9rem; }
+    }
+
+    @media (max-width: 440px) {
+      .partials-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background-color: #ffffff; padding: 0; }
+      .section-box, .action-buttons-row, .pdf-Config-bar, .visor-warning-banner { display: none !important; }
+      .results-area { display: block !important; border: none; background-color: #ffffff; }
+      details.custom-dropdown { display: block !important; }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;" ondragstart="return false;">
+
+  <div id="securityToast">🔒 Acción bloqueada: No se permite inspeccionar el código, copiar ni pegar (Propiedad Intelectual FD UNC).</div>
+
+  <div class="app-container">
+
+    <div id="avisoVisorSinJS" class="visor-warning-banner">
+      <strong>📱 Aviso importante para Celular:</strong> Si está viendo este cartel, abrió el archivo dentro de la <em>Vista Previa de WhatsApp / Mis Archivos</em> (la cual desactiva por seguridad el botón <strong>Calcular</strong> y el <strong>Formato ARS</strong>).<br>
+      👉 <strong>Solución:</strong> Toque los <strong>3 puntitos (⋮)</strong> arriba a la derecha y elija <strong>"Abrir con Chrome"</strong> (en Android) o ábralo en su navegador web.
+    </div>
+
+    <header>
+      <span class="badge-unc">Facultad de Derecho • Universidad Nacional de Córdoba</span>
+      <h1>Calculadora de Indemnizaciones DTSS Cat B 2026 FD UNC</h1>
+      <h2>Hecho por Saavedra, Bruno Tomás, Practico 2do Parcial Dr. Paz</h2>
+      <p>Régimen Indemnizatorio LCT N.° 20.744 (Texto según Ley N.° 27.802), Ley N.° 23.551 y Régimen Transitorio</p>
+    </header>
+
+    <div class="content-body">
+
+      <!-- =========================================================
+           SEGMENTO 1: DATOS PRINCIPALES ALINEADOS + MODO DUAL DE FECHAS + REGISTRACIÓN
+           ========================================================= -->
+      <div class="section-box">
+        <div class="section-header-flex">
+          <h2 class="section-title">Datos Principales para el Cálculo Indemnizatorio</h2>
+          <button type="button" class="btn-date-mode" id="btnModoFecha" onclick="alternarModoCargaFechas()">
+            ⌨️ Cambiar fechas a Escritura Rápida (dd/mm/aaaa)
+          </button>
+        </div>
+        <p class="section-subtitle">Todos los campos se encuentran alineados y cuentan con autoguardado inteligente. En celulares puede usar el calendario o tocar el botón superior para escribir las fechas de corrido con teclado numérico.</p>
+
+        <!-- Fila 1 alineada: Carátula Opcional -->
+        <div class="grid-inputs-2" style="margin-bottom: 1.15rem;">
+          <div class="form-group">
+            <label for="nombreTrabajador">Trabajador / Actor (Opcional para Carátula PDF):</label>
+            <input type="text" id="nombreTrabajador" placeholder="Ej: Juan Pérez" oninput="guardarEstadoLocal()">
+          </div>
+          <div class="form-group">
+            <label for="nombreEmpleador">Empleador / Demandado (Opcional para Carátula PDF):</label>
+            <input type="text" id="nombreEmpleador" placeholder="Ej: Empresa S.A." oninput="guardarEstadoLocal()">
+          </div>
+        </div>
+
+        <!-- Fila 2 alineada: MRMNH, Fecha de Ingreso y Fecha de Egreso -->
+        <div class="grid-inputs-3">
+          <div class="form-group">
+            <label for="mrmnh">MRMNH (Remuneración a considerar):</label>
+            <input 
+              type="text" 
+              inputmode="numeric" 
+              id="mrmnh" 
+              placeholder="Ej: 1.500.000" 
+              oninput="formatearCampoMonedaEnVivo(this); actualizarPrevisualizacion(); actualizarPrevisualizacionTope(); guardarEstadoLocal();"
+              onkeyup="formatearCampoMonedaEnVivo(this); actualizarPrevisualizacion(); actualizarPrevisualizacionTope();"
+              onchange="actualizarPrevisualizacion(); actualizarPrevisualizacionTope(); guardarEstadoLocal();"
+            >
+            <span class="preview-hint" id="preview-mrmnh">Formato ARS: $ 0,00</span>
+          </div>
+
+          <div class="form-group">
+            <label for="fechaIngreso">Fecha de ingreso:</label>
+            <input 
+              type="date" 
+              class="input-fecha-dual"
+              id="fechaIngreso" 
+              oninput="formatearFechaRapidaSiTexto(this); actualizarPrevisualizacion(); actualizarTextoInformativoTopes(); evaluarPeriodoPruebaYVacaciones(); guardarEstadoLocal();" 
+              onchange="actualizarPrevisualizacion(); actualizarTextoInformativoTopes(); evaluarPeriodoPruebaYVacaciones(); guardarEstadoLocal();"
+            >
+            <span class="preview-hint" id="preview-ingreso">Formato: dd/mm/aaaa</span>
+          </div>
+
+          <div class="form-group">
+            <label for="fechaEgreso">Fecha de egreso:</label>
+            <input 
+              type="date" 
+              class="input-fecha-dual"
+              id="fechaEgreso" 
+              oninput="formatearFechaRapidaSiTexto(this); actualizarPrevisualizacion(); actualizarTextoInformativoTopes(); evaluarVigenciaMultas(); evaluarPeriodoPruebaYVacaciones(); guardarEstadoLocal();" 
+              onchange="actualizarPrevisualizacion(); actualizarTextoInformativoTopes(); evaluarVigenciaMultas(); evaluarPeriodoPruebaYVacaciones(); guardarEstadoLocal();"
+            >
+            <span class="preview-hint" id="preview-egreso">Formato: dd/mm/aaaa</span>
+          </div>
+        </div>
+
+        <!-- Bloque de Registración (Aplicación 100% automática del Período de Prueba según antigüedad y registración) -->
+        <div class="permanent-feature-box" id="panelDetectorPrueba">
+          <strong>🔍 Estado de Registración de la Relación Laboral (Detección Automática de Período de Prueba - Art. 92 bis LCT):</strong>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+            Tilde si el trabajador estaba registrado o no. El sistema detectará y aplicará <strong>automáticamente</strong> el Período de Prueba si corresponde por antigüedad y registración.
+          </p>
+
+          <div class="inline-checks-row">
+            <label class="check-option-pill" for="chkTrabajadorRegistrado">
+              <input type="checkbox" id="chkTrabajadorRegistrado" checked onchange="toggleCheckboxRegistracion('registrado'); guardarEstadoLocal();">
+              <span>Vínculo Registrado Regularmente</span>
+            </label>
+
+            <label class="check-option-pill" for="chkTrabajadorNoRegistrado">
+              <input type="checkbox" id="chkTrabajadorNoRegistrado" onchange="toggleCheckboxRegistracion('no_registrado'); guardarEstadoLocal();">
+              <span>Vínculo NO Registrado («En negro»)</span>
+            </label>
+          </div>
+
+          <div id="textoDetectorPrueba" style="margin-top: 0.65rem; font-size: 0.88rem; color: var(--text-main);">
+            ℹ️ Complete las fechas de ingreso y egreso arriba para que el sistema determine automáticamente el régimen aplicable.
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================
+           SEGMENTO 2: MODIFICADORES (EXCLUYENTES ENTRE SÍ)
+           ========================================================= -->
+      <div class="section-box">
+        <h2 class="section-title">Modificadores del Régimen Indemnizatorio (Excluyentes entre sí)</h2>
+        <p class="section-subtitle">Al seleccionar una opción en su celular o computadora, la otra queda automáticamente desmarcada y excluida.</p>
+        <div class="checkbox-group">
+
+          <!-- CHECKBOX A: AGRAVAMIENTOS -->
+          <div class="checkbox-card" id="card-agravamientos">
+            <input type="checkbox" id="chkAgravamientos" class="chk-main-toggle" onchange="sincronizarModificadores('agravamientos'); guardarEstadoLocal();">
+            <label for="chkAgravamientos" class="touch-header-row">
+              <span class="title-chk">Agravamientos indemnizatorios</span>
+              <span class="exclusion-pill" id="pill-agravamientos">Excluye Indemnización Atenuada</span>
+            </label>
+
+            <div class="dynamic-panel" id="panelAgravamientos">
+              <p style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.65rem; color: var(--primary-legal);">
+                Toque la causal de agravamiento para desplegar sus opciones de porcentaje o tiempo:
+              </p>
+
+              <div class="agravamiento-selector-wrapper">
+
+                <!-- Opción 1: Embarazo -->
+                <input type="radio" name="radioAgravamiento" id="agrav_embarazo" value="embarazo" class="radio-agrav-input" checked onchange="actualizarTextoInformativoTopes(); guardarEstadoLocal();">
+                <label for="agrav_embarazo" class="radio-agrav-label">
+                  Embarazo / Maternidad (Arts. 178 y 182 LCT) — Agravamiento: +100% de 1 año (13 MRMNH)
+                </label>
+
+                <!-- Opción 2: Matrimonio -->
+                <input type="radio" name="radioAgravamiento" id="agrav_matrimonio" value="matrimonio" class="radio-agrav-input" onchange="actualizarTextoInformativoTopes(); guardarEstadoLocal();">
+                <label for="agrav_matrimonio" class="radio-agrav-label">
+                  Matrimonio (Arts. 181 y 182 LCT) — Agravamiento: +100% de 1 año (13 MRMNH)
+                </label>
+
+                <!-- Opción 3: Despido Discriminatorio (Causa "Otros" + Campo limpio para colocar % >= 50%) -->
+                <input type="radio" name="radioAgravamiento" id="agrav_discriminatorio" value="discriminatorio" class="radio-agrav-input" onchange="actualizarTextoInformativoTopes(); guardarEstadoLocal();">
+                <label for="agrav_discriminatorio" class="radio-agrav-label">
+                  Despido Discriminatorio (Art. 245 bis LCT) — Elegir motivo (incluye «Otros») y colocar porcentaje (mínimo 50%)
+                </label>
+                <div class="sub-panel-box" id="subPanelDiscriminatorio">
+                  <div class="form-group">
+                    <label for="causaDiscriminacion">Causa / Motivo de discriminación (Art. 245 bis LCT):</label>
+                    <select id="causaDiscriminacion" onchange="toggleCausaOtrosDiscriminacion(); guardarEstadoLocal();">
+                      <option value="Etnia o raza">Motivos de etnia o raza</option>
+                      <option value="Nacionalidad">Motivos de nacionalidad</option>
+                      <option value="Religión">Motivos religiosos</option>
+                      <option value="Ideología">Motivos de ideología</option>
+                      <option value="Opinión política o gremial">Opinión política o gremial</option>
+                      <option value="Sexo, género o identidad de género">Sexo, género o identidad de género</option>
+                      <option value="Orientación sexual">Orientación sexual</option>
+                      <option value="Condición de salud, discapacidad o caracteres físicos">Condición de salud, discapacidad o caracteres físicos</option>
+                      <option value="Edad o condición social/económica">Edad o condición social/económica</option>
+                      <option value="Otros">Otros</option>
+                    </select>
+                    <span class="preview-hint">Carácter enunciativo (no taxativo)</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="porcentajeDiscriminatorio">Coloque el porcentaje de agravamiento (% — Siempre 50% o más):</label>
+                    <input 
+                      type="number" 
+                      id="porcentajeDiscriminatorio" 
+                      placeholder="Escriba el % (Ej: 50, 65, 80, 100)" 
+                      min="50" 
+                      max="100" 
+                      step="0.5"
+                      oninput="guardarEstadoLocal()"
+                    >
+                    <span class="preview-hint">Campo libre: mínimo legal 50% (hasta 100%)</span>
+                  </div>
+
+                  <div class="form-group" id="grupoInputCausaOtros" style="display: none; grid-column: 1 / -1;">
+                    <label for="textoCausaOtros" style="min-height: 0;">Especifique el motivo de discriminación («Otros»):</label>
+                    <input type="text" id="textoCausaOtros" placeholder="Opcional: detalle la causal discriminatoria" oninput="guardarEstadoLocal()">
+                  </div>
+                </div>
+
+                <!-- Opción 4: Enfermedad o Accidente Inculpable -->
+                <input type="radio" name="radioAgravamiento" id="agrav_enfermedad" value="enfermedad_accidente" class="radio-agrav-input" onchange="actualizarTextoInformativoTopes(); guardarEstadoLocal();">
+                <label for="agrav_enfermedad" class="radio-agrav-label">
+                  Despido en licencia por Enfermedad/Accidente (Art. 213 LCT) — Establecer fecha de alta / fin de licencia
+                </label>
+                <div class="sub-panel-box" id="subPanelEnfermedad">
+                  <div class="form-group">
+                    <label for="cargasFamiliaEnfermedad">Situación familiar del trabajador (Art. 208 LCT):</label>
+                    <select id="cargasFamiliaEnfermedad" onchange="actualizarTextoInformativoTopes(); verificarEnfermedadPostCarga(false); guardarEstadoLocal();">
+                      <option value="sin_cargas">Sin cargas de familia (Máx. legal: 3 meses si antig. &lt; 5 años | 6 meses si ≥ 5 años)</option>
+                      <option value="con_cargas">Con cargas de familia (Máx. legal: 6 meses si antig. &lt; 5 años | 12 meses si ≥ 5 años)</option>
+                    </select>
+                    <span class="preview-hint">Determina el tope de 3, 6 o 12 meses</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="fechaAltaEnfermedad">Fecha estimada de alta médica o cese de licencia (Art. 213 LCT):</label>
+                    <input 
+                      type="date" 
+                      class="input-fecha-dual"
+                      id="fechaAltaEnfermedad" 
+                      oninput="formatearFechaRapidaSiTexto(this); previsualizarFechaEnfermedad(); guardarEstadoLocal();" 
+                      onchange="previsualizarFechaEnfermedad(); guardarEstadoLocal();" 
+                      onblur="verificarEnfermedadPostCarga(false)"
+                    >
+                    <span class="preview-hint" id="preview-fecha-alta">Escriba la fecha estimada (dd/mm/aaaa)</span>
+                  </div>
+                  <div class="error-validation-box" id="errorBoxEnfermedad"></div>
+                  <div class="limit-alert-hint" id="infoTopeEnfermedad">
+                    <strong>Pauta normativa (Art. 208 LCT):</strong> Ingrese manualmente la fecha de alta o fin de licencia. Luego de ingresarla, el sistema verificará que no exceda los 3, 6 o 12 meses legales según antigüedad y cargas de familia.
+                  </div>
+                </div>
+
+                <!-- Opción 5: Tutela Sindical -->
+                <input type="radio" name="radioAgravamiento" id="agrav_tutela" value="tutela_sindical" class="radio-agrav-input" onchange="cambiarModoInputTutela(); actualizarTextoInformativoTopes(); guardarEstadoLocal();">
+                <label for="agrav_tutela" class="radio-agrav-label">
+                  Tutela Sindical (Arts. 48, 50 y 52 Ley 23.551) — Establecer condición gremial y tiempos de tutela (+ SAC)
+                </label>
+                <div class="sub-panel-box" id="subPanelTutela">
+                  <div class="form-group">
+                    <label for="tipoCandidato">Condición gremial (Arts. 48, 50 y 52 Ley 23.551):</label>
+                    <select id="tipoCandidato" onchange="cambiarModoInputTutela(); actualizarTextoInformativoTopes(); verificarTutelaPostCarga(false); guardarEstadoLocal();">
+                      <option value="no_electo">Candidato No Electo (Tutela dura 6 meses + 1 año de indemnizaciones Art. 52 + SAC)</option>
+                      <option value="electo_posmandato">Candidato Electo en el transcurso de la tutela posmandato (Fecha de cese de su cargo + SAC)</option>
+                      <option value="electo_mandato">Candidato Electo con mandato vigente en curso (Mandato restante + 1 año estabilidad + SAC)</option>
+                    </select>
+                    <span class="preview-hint">Incluye SAC completo y proporcional</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="fechaFinTutela" id="labelFechaFinTutela">Fecha en que vencen los 6 meses de tutela del candidato no electo:</label>
+                    <input 
+                      type="date" 
+                      class="input-fecha-dual"
+                      id="fechaFinTutela" 
+                      oninput="formatearFechaRapidaSiTexto(this); previsualizarFechaTutela(); guardarEstadoLocal();" 
+                      onchange="previsualizarFechaTutela(); guardarEstadoLocal();" 
+                      onblur="verificarTutelaPostCarga(false)"
+                    >
+                    <span class="preview-hint" id="preview-fecha-tutela">Escriba la fecha manualmente (dd/mm/aaaa)</span>
+                  </div>
+
+                  <div class="error-validation-box" id="errorBoxTutela"></div>
+                  <div class="limit-alert-hint" id="infoTopeTutela">
+                    <strong>Pauta normativa (Arts. 50 y 52 Ley 23.551 + SAC):</strong> La tutela del candidato no electo dura <b>6 meses</b>; si es despedido en ese lapso tiene derecho a los salarios que falten de esos 6 meses <b>más el importe de un (1) año más de indemnizaciones (12 meses adicionales) más SAC</b>.
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- CHECKBOX B: INDEMNIZACIÓN ATENUADA Y SUPUESTOS ESPECIALES DE EXTINCIÓN (INCLUYE ART. 212 4.º PÁRR.) -->
+          <div class="checkbox-card" id="card-atenuada">
+            <input type="checkbox" id="chkAtenuada" class="chk-main-toggle" onchange="sincronizarModificadores('atenuada'); actualizarPrevisualizacion(); guardarEstadoLocal();">
+            <label for="chkAtenuada" class="touch-header-row">
+              <span class="title-chk">Indemnización Atenuada / Extinción por Causales Objetivas</span>
+              <span class="exclusion-pill" id="pill-atenuada">Excluye Agravamientos Indemnizatorios</span>
+            </label>
+
+            <div class="dynamic-panel" id="panelAtenuada">
+              <div class="form-group">
+                <label for="selectAtenuada" style="min-height: 0;">Seleccione el supuesto legal y su porcentaje de atenuación (o incapacidad absoluta):</label>
+                <select id="selectAtenuada" onchange="actualizarPrevisualizacion(); guardarEstadoLocal();">
+                  <option value="fuerza_mayor">Fuerza Mayor no imputable (Art. 247 LCT) — Se atenúa un 50% (percibe 50% del Art. 245)</option>
+                  <option value="razones_economicas">Razones económicas / Falta o disminución de trabajo (Art. 247 LCT) — Se atenúa un 50% (percibe 50% del Art. 245)</option>
+                  <option value="muerte_empleador">Muerte del empleador (Art. 249 LCT) — Se atenúa un 50% (percibe 50% del Art. 245, sin preaviso ni integración)</option>
+                  <option value="muerte_trabajador">Muerte del trabajador (Art. 248 LCT) — Se atenúa un 50% (percibe 50% del Art. 245, sin preaviso ni integración)</option>
+                  <option value="quiebra_no_fraudulenta">Quiebra o concurso no fraudulento (Art. 251 LCT) — Se atenúa un 50% (percibe 50% del Art. 245, sin preaviso ni integración)</option>
+                  <option value="imposibilidad_reincorporacion">Imposibilidad de reincorporación por incapacidad parcial (Art. 212 2do párr. LCT) — Se atenúa un 50% (percibe 50% del Art. 245)</option>
+                  <option value="incapacidad_absoluta">Incapacidad Absoluta del trabajador ≥ 66% T.O. (Art. 212 4to párr. LCT) — Atenuación 0% (percibe 100% Art. 245, sin preaviso ni integración)</option>
+                  <option value="inhabilitacion">Inhabilitación no dolosa ni por culpa grave (Art. 254 2do párr. LCT) — Se atenúa un 50% (percibe 50% del Art. 245)</option>
+                  <option value="plazo_fijo_cumplido">Vencimiento de contrato a plazo fijo ≥ 1 año (Art. 250 LCT) — Se atenúa un 50% (percibe 50% del Art. 245, sin preaviso ni integración)</option>
+                  <option value="rescision_maternidad">Rescisión tras licencia por maternidad (Art. 183 inc. b LCT) — Se atenúa un 75% (percibe 25% del Art. 245, sin preaviso ni integración)</option>
+                  <option value="imposibilidad_excedencia">Imposibilidad de reingreso tras excedencia (Art. 184 últ. párr. LCT) — Se atenúa un 75% (percibe 25% del Art. 245, sin preaviso ni integración)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =========================================================
+           SEGMENTO 3: PREAVISO, VACACIONES AUTOMÁTICAS (ART. 150 AL 31/12 Y ART. 153) Y CRITERIO CÓRDOBA
+           ========================================================= -->
+      <div class="section-box">
+        <h2 class="section-title">Régimen de Preaviso, Vacaciones (Arts. 150, 153 y 156 LCT) y Opciones en Córdoba</h2>
+        <p class="section-subtitle">Indique si medió preaviso y seleccione si desea incluir el cálculo opcional de SAC sobre vacaciones proporcionales devengadas. El cálculo de vacaciones (1 día cada 20 trabajados o escala proyectada al 31/12) se realiza de forma 100% automática.</p>
+
+        <div style="margin-bottom: 1rem;">
+          <div class="form-group">
+            <label for="medioPreaviso" style="min-height: 0;">¿Medió preaviso otorgado por el empleador al trabajador?</label>
+            <select id="medioPreaviso" onchange="actualizarPrevisualizacion(); guardarEstadoLocal();">
+              <option value="no">No medió preaviso (se adeuda Indemnización Sustitutiva + Integración del Mes)</option>
+              <option value="si">Sí medió preaviso otorgado en término (no adeuda rubros arts. 232 y 233 LCT)</option>
+            </select>
+            <span class="preview-hint" id="preview-preaviso">Estado actual: Preaviso omitido (se liquida sustitutiva e integración)</span>
+          </div>
+        </div>
+
+        <div class="permanent-feature-box blue-box" id="panelDetectorVacaciones20" style="margin-top: 0; margin-bottom: 1rem;">
+          <div id="textoDetectorVacaciones20">
+            <strong>📅 Cálculo Automático de Vacaciones Proporcionales (Arts. 150, 153 y 156 LCT):</strong><br>
+            • Si la <strong>antigüedad total en el empleo</strong> no alcanza la mitad de los días hábiles del año (&lt; 6 meses totales), el sistema calcula automáticamente <strong>1 día de descanso por cada 20 días de trabajo efectivo</strong> (Art. 153 LCT).<br>
+            • Si el trabajador posee <strong>mayor antigüedad total en el empleo</strong>, liquida automáticamente la proporción de la escala anual (14, 21, 28 o 35 días), computando la <strong>antigüedad proyectada al 31 de diciembre del año de egreso</strong> conforme al Art. 150 penúltimo párrafo LCT.
+          </div>
+        </div>
+
+        <div class="checkbox-card" id="card-sac-vacaciones">
+          <input type="checkbox" id="chkSacSobreVacaciones" class="chk-main-toggle" onchange="actualizarEstiloSacVacaciones(); guardarEstadoLocal();">
+          <label for="chkSacSobreVacaciones" class="touch-header-row">
+            <span class="title-chk">¿Desea realizar el cálculo de Vacaciones Proporcionales Devengadas sobre SAC (SAC s/ Vacaciones)?</span>
+            <span class="exclusion-pill">Opcional • Poco utilizado en Córdoba</span>
+          </label>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.55rem;">
+            <strong>Nota de práctica forense local:</strong> Este tipo de liquidación (adicionar el 8,33% de SAC sobre la indemnización por vacaciones proporcionales no gozadas) <strong>no es tan utilizada en los tribunales de Córdoba</strong>. Solo se calculará si tilda esta casilla.
+          </p>
+        </div>
+      </div>
+
+      <!-- =========================================================
+           SEGMENTO 4: MULTAS DEROGADAS + REPARACIÓN INTEGRAL POST-09/07/2024 + ART. 80 LCT
+           ========================================================= -->
+      <div class="section-box">
+        <h2 class="section-title">Régimen de Multas Derogadas (Ley 24.013/24.014, Ley 25.323 y Art. 80 LCT)</h2>
+        <p class="section-subtitle">Las multas de la <strong>Ley 24.013 (Arts. 8, 9, 10 y 15) son acumulables entre sí</strong> cuando su acumulación sea coherente, pero <strong>NO son acumulables con los artículos de la Ley 25.323</strong>. Pueden incluirse en casos previos al 09/07/2024 o solicitarse en fechas posteriores vía <strong>Reparación Integral</strong>.</p>
+
+        <div class="multas-status-banner" id="bannerEstadoMultas">
+          ℹ️ Verifique la fecha de egreso en el Segmento 1 o tilde la opción de <strong>Reparación Integral</strong> abajo para incluir este sector aun con posterioridad al <strong>09/07/2024</strong>.
+        </div>
+
+        <div class="checkbox-card" id="card-multas">
+          <input type="checkbox" id="chkMultasDerogadas" class="chk-main-toggle" onchange="aplicarToggleMultas(); guardarEstadoLocal();">
+          <label for="chkMultasDerogadas" class="touch-header-row">
+            <span class="title-chk">Incluir sector de multas / indemnizaciones agravadas (Pre-09/07/2024 o vía Reparación Integral)</span>
+            <span class="exclusion-pill">Leyes 24.013 • 25.323 • Art. 80 LCT</span>
+          </label>
+
+          <div class="dynamic-panel" id="panelMultasDerogadas">
+            <div class="reparacion-integral-box" id="boxReparacionIntegral">
+              <label style="display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer;">
+                <input type="checkbox" id="chkReparacionIntegralPost2024" style="width: 20px; height: 20px; margin-top: 0.15rem; accent-color: var(--accent-bordo);" onchange="evaluarVigenciaMultas(); guardarEstadoLocal();">
+                <span><strong>Habilitar e incluir este sector en despidos posteriores al 09/07/2024 vía Reparación Integral:</strong> Aunque estas multas fueron derogadas formalmente, tilde esta opción para reclamar su cuantificación vía <em>Reparación Integral de Daños y Perjuicios / Inconstitucionalidad</em>.</span>
+              </label>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label for="fechaIntimacionMultas" style="min-height: 0;">Fecha de intimación fehaciente (opcional si intimó antes del 09/07/2024):</label>
+                <input type="date" class="input-fecha-dual" id="fechaIntimacionMultas" oninput="formatearFechaRapidaSiTexto(this); evaluarVigenciaMultas(); guardarEstadoLocal();" onchange="evaluarVigenciaMultas(); guardarEstadoLocal();" onblur="verificarFechaMultasPostCarga(false)">
+                <span class="preview-hint" id="preview-intimacion-multas">Si no hubo intimación previa, se evalúa con la Fecha de Egreso</span>
+              </div>
+            </div>
+
+            <div class="error-validation-box" id="errorBoxMultas"></div>
+
+            <div class="multas-subgrid">
+              <!-- Bloque Ley 24.013 -->
+              <div class="multa-block">
+                <h4>Ley Nacional 24.013 (ref. 24.014) — Arts. 8, 9, 10 y 15</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.7rem;">
+                  * Acumulables entre sí con coherencia lógica (Art. 8 + Art. 15, o bien Art. 9 + Art. 10 + Art. 15). <strong>No acumulables con la Ley 25.323.</strong>
+                </p>
+
+                <div class="multa-item-wrap">
+                  <div>
+                    <input type="checkbox" id="chkLNE8" class="multa-chk-input" onchange="sincronizarExclusionMultas('LNE8'); guardarEstadoLocal();">
+                    <label for="chkLNE8" class="multa-item-label"><strong>Art. 8:</strong> Ausencia total de registración (25% de las remuneraciones devengadas desde el ingreso).</label>
+                  </div>
+                </div>
+
+                <div class="multa-item-wrap">
+                  <input type="checkbox" id="chkLNE9" class="multa-chk-input" onchange="sincronizarExclusionMultas('LNE9'); guardarEstadoLocal();">
+                  <label for="chkLNE9" class="multa-item-label"><strong>Art. 9:</strong> Registración con fecha de ingreso posterior a la real (25% desde ingreso real hasta el falsamente registrado).</label>
+                  <div class="multa-SubInput-box" id="boxInputLNE9">
+                    <label for="fechaFalsaLNE9" style="min-height: 0;">Fecha de ingreso falsamente registrada:</label>
+                    <input type="date" class="input-fecha-dual" id="fechaFalsaLNE9" oninput="formatearFechaRapidaSiTexto(this); guardarEstadoLocal();">
+                  </div>
+                </div>
+
+                <div class="multa-item-wrap">
+                  <input type="checkbox" id="chkLNE10" class="multa-chk-input" onchange="sincronizarExclusionMultas('LNE10'); guardarEstadoLocal();">
+                  <label for="chkLNE10" class="multa-item-label"><strong>Art. 10:</strong> Registración de una remuneración menor a la real percibida (25% de las remuneraciones no registradas).</label>
+                  <div class="multa-SubInput-box" id="boxInputLNE10">
+                    <label for="remuneracionFalsaLNE10" style="min-height: 0;">Monto mensual falsamente registrado ($ ARS):</label>
+                    <input type="text" inputmode="numeric" id="remuneracionFalsaLNE10" placeholder="Ej: 800.000" oninput="formatearCampoMonedaEnVivo(this); guardarEstadoLocal();">
+                  </div>
+                </div>
+
+                <div class="multa-item-wrap">
+                  <div>
+                    <input type="checkbox" id="chkLNE15" class="multa-chk-input" onchange="sincronizarExclusionMultas('LNE15'); guardarEstadoLocal();">
+                    <label for="chkLNE15" class="multa-item-label"><strong>Art. 15:</strong> Despido sin causa dentro de los 2 años desde la intimación fehaciente (Duplica indemnizaciones arts. 245, 232 y 233 LCT).</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloque Ley 25.323 y Art. 80 LCT -->
+              <div class="multa-block">
+                <h4>Ley Nacional 25.323 (Arts. 1 y 2) y Art. 80 LCT</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.7rem;">
+                  * Los artículos de la Ley 25.323 <strong>NO son acumulables con los Arts. 8, 9, 10 y 15 de la Ley 24.013</strong>.
+                </p>
+
+                <div class="multa-item-wrap">
+                  <div>
+                    <input type="checkbox" id="chkL25323_1" class="multa-chk-input" onchange="sincronizarExclusionMultas('L25323_1'); guardarEstadoLocal();">
+                    <label for="chkL25323_1" class="multa-item-label"><strong>Art. 1 Ley 25.323:</strong> Relación no registrada o registrada de modo deficiente al momento del despido (+100% del Art. 245 LCT).</label>
+                  </div>
+                </div>
+
+                <div class="multa-item-wrap" style="margin-top: 0.55rem;">
+                  <div>
+                    <input type="checkbox" id="chkL25323_2" class="multa-chk-input" onchange="sincronizarExclusionMultas('L25323_2'); guardarEstadoLocal();">
+                    <label for="chkL25323_2" class="multa-item-label"><strong>Art. 2 Ley 25.323:</strong> Falta de pago en término de las indemnizaciones que obliga a iniciar acciones (+50% sobre Arts. 245, 232 y 233 LCT).</label>
+                  </div>
+                </div>
+
+                <div class="multa-item-wrap" style="margin-top: 0.55rem; padding-top: 0.55rem; border-top: 1px dashed var(--border-soft);">
+                  <div>
+                    <input type="checkbox" id="chkArt80LCT" class="multa-chk-input" onchange="guardarEstadoLocal()">
+                    <label for="chkArt80LCT" class="multa-item-label"><strong>Art. 80 LCT:</strong> Falta de entrega de certificados de trabajo y aportes (Indemnización equivalente a 3 MRMNH).</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================
+           SEGMENTO 5: TOPE GREMIAL / CONVENCIONAL + PISO 67% Y PISO 1 MES MRMNH
+           ========================================================= -->
+      <div class="section-box">
+        <h2 class="section-title">Tope Gremial / Convencional en las Indemnizaciones (Art. 245 LCT, Piso 67% y Piso 1 Mes)</h2>
+        <p class="section-subtitle">Elija si desea cargar el <strong>Promedio de las remuneraciones del convenio colectivo</strong> (se multiplica × 3) o el <strong>Tope Gremial ya establecido</strong> (sin multiplicar × 3). La base nunca será inferior al <strong>67% de la MRMNH</strong> (*Vizzoti*) ni el total inferior a <strong>1 mes de MRMNH pura</strong> (Art. 245 últ. párr. LCT).</p>
+
+        <div class="checkbox-card" id="card-tope-gremial">
+          <input type="checkbox" id="chkTopeGremial" class="chk-main-toggle" onchange="aplicarToggleTopeGremial(); guardarEstadoLocal();">
+          <label for="chkTopeGremial" class="touch-header-row">
+            <span class="title-chk">Evaluar y aplicar Tope Gremial / Convencional sobre la base indemnizatoria (Art. 245 LCT)</span>
+            <span class="exclusion-pill">Piso 67% + Piso 1 MRMNH</span>
+          </label>
+
+          <div class="dynamic-panel" id="panelTopeGremial">
+            <div class="grid-inputs-2">
+              <div class="form-group">
+                <label for="modoCargaTope">¿Qué valor del Convenio Colectivo (CCT) desea ingresar?</label>
+                <select id="modoCargaTope" onchange="cambiarModoCargaTope(); guardarEstadoLocal();">
+                  <option value="promedio">1. Ingresar el PROMEDIO salarial del CCT (Se multiplicará × 3 para fijar el Tope)</option>
+                  <option value="tope_fijo">2. Ingresar el TOPE GREMIAL ya establecido (Monto fijo, NO se multiplica × 3)</option>
+                </select>
+                <span class="preview-hint">Piso mínimo garantizado: 67% de la MRMNH</span>
+              </div>
+
+              <div class="form-group">
+                <label for="valorInputTope" id="labelValorInputTope">Monto del Promedio Gremial mensual ($ ARS):</label>
+                <input 
+                  type="text" 
+                  inputmode="numeric" 
+                  id="valorInputTope" 
+                  placeholder="Ej: 600.000" 
+                  oninput="formatearCampoMonedaEnVivo(this); actualizarPrevisualizacionTope(); guardarEstadoLocal();"
+                  onkeyup="formatearCampoMonedaEnVivo(this); actualizarPrevisualizacionTope();"
+                >
+                <span class="preview-hint" id="preview-valor-tope">Formato ARS: $ 0,00</span>
+              </div>
+            </div>
+
+            <div class="tope-live-summary" id="resumenVivoTope">
+              <strong>Estado del Tope Gremial (Art. 245 LCT):</strong> Ingrese la MRMNH en el Segmento 1 y el valor convencional arriba para previsualizar el Tope y el piso mínimo del 67% de la MRMNH.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-validation-box" id="alertaMovilGlobal"></div>
+
+      <!-- FILA DE BOTONES -->
+      <div class="action-buttons-row">
+        <button type="button" class="btn-calculate" id="btnCalcular" onclick="calcularIndemnizacion()">
+          Calcular Liquidación Indemnizatoria Completa
+        </button>
+        <button type="button" class="btn-clear" onclick="limpiarFormularioCompleto()">
+          🔄 Limpiar / Nuevo Caso
+        </button>
+      </div>
+
+      <!-- =========================================================
+           ÁREA DE RESULTADOS
+           ========================================================= -->
+      <div class="results-area" id="resultsArea">
+        <div class="total-banner">
+          <div class="label-total" id="labelBannerTotal">Resultado Total de la Liquidación</div>
+          <div class="amount-total" id="montoTotal">$ 0,00</div>
+          <div class="total-nominal-sub" id="subMontoNominal"></div>
+        </div>
+
+        <div class="composition-box">
+          <div class="composition-title">Composición Porcentual de la Liquidación</div>
+          <div class="comp-bar-track">
+            <div class="comp-seg-indem" id="barSegIndem" style="width: 50%;"></div>
+            <div class="comp-seg-deven" id="barSegDeven" style="width: 50%;"></div>
+            <div class="comp-seg-extra" id="barSegExtra" style="width: 0%;"></div>
+          </div>
+          <div class="comp-legend">
+            <span><i class="comp-dot" style="background-color: var(--primary-legal);"></i><strong id="lblPorcIndem">Indemnizaciones Base: 0%</strong></span>
+            <span><i class="comp-dot" style="background-color: var(--sage-border);"></i><strong id="lblPorcDeven">Rubros Devengados: 0%</strong></span>
+            <span><i class="comp-dot" style="background-color: var(--accent-bordo);"></i><strong id="lblPorcExtra">Agravamientos / Sanciones: 0%</strong></span>
+          </div>
+        </div>
+
+        <div class="partials-grid">
+          <div class="partial-card">
+            <h4>Antigüedad / Base</h4>
+            <div class="partial-value" id="parcialAntiguedad">$ 0,00</div>
+            <div class="partial-norm" id="normaAntiguedad">Art. 245 LCT</div>
+          </div>
+
+          <div class="partial-card">
+            <h4>Omisión de Preaviso</h4>
+            <div class="partial-value" id="parcialPreaviso">$ 0,00</div>
+            <div class="partial-norm" id="normaPreaviso">Arts. 231 y 232 LCT</div>
+          </div>
+
+          <div class="partial-card">
+            <h4>Integración Mes Despido</h4>
+            <div class="partial-value" id="parcialIntegracion">$ 0,00</div>
+            <div class="partial-norm" id="normaIntegracion">Art. 233 LCT</div>
+          </div>
+
+          <div class="partial-card obligatorio-card">
+            <h4>Remun. Devengadas Mes</h4>
+            <div class="partial-value" id="parcialDiasMes">$ 0,00</div>
+            <div class="partial-norm" id="normaDiasMes">Días trabajados del mes</div>
+          </div>
+
+          <div class="partial-card obligatorio-card">
+            <h4>SAC Proporcional</h4>
+            <div class="partial-value" id="parcialSAC">$ 0,00</div>
+            <div class="partial-norm" id="normaSAC">Art. 123 LCT</div>
+          </div>
+
+          <div class="partial-card obligatorio-card">
+            <h4>Vacaciones Devengadas</h4>
+            <div class="partial-value" id="parcialVacaciones">$ 0,00</div>
+            <div class="partial-norm" id="normaVacaciones">Art. 156 / 153 LCT</div>
+          </div>
+
+          <div class="partial-card cordoba-card" id="cardParcialSacVacaciones" style="display: none;">
+            <h4>SAC s/ Vacaciones Prop.</h4>
+            <div class="partial-value" id="parcialSacVacaciones">$ 0,00</div>
+            <div class="partial-norm" id="normaSacVacaciones">Opcional (Criterio Cba.)</div>
+          </div>
+
+          <div class="partial-card" id="cardParcialAgravamiento" style="display: none;">
+            <h4>Agravamiento Especial</h4>
+            <div class="partial-value" id="parcialAgravamiento">$ 0,00</div>
+            <div class="partial-norm" id="normaAgravamiento">-</div>
+          </div>
+
+          <div class="partial-card multas-card" id="cardParcialMultas" style="display: none;">
+            <h4>Multas / Sanciones</h4>
+            <div class="partial-value" id="parcialMultas">$ 0,00</div>
+            <div class="partial-norm" id="normaMultas">Leyes 24.013 / 25.323 / Art. 80</div>
+          </div>
+        </div>
+
+        <div class="pdf-Config-bar">
+          <div class="form-group">
+            <label for="nombreArchivoPDF" style="min-height: 0;">Nombre del archivo PDF antes de descargar / imprimir:</label>
+            <input type="text" id="nombreArchivoPDF" placeholder="Ej: Liquidacion_Indemnizatoria_Caso_Perez" value="Liquidacion_Indemnizatoria_DTSS_CatB_UNC">
+          </div>
+          <button type="button" class="btn-pdf" id="btnDescargarPDF" onclick="descargarPDF()">
+            📄 Descargar PDF (Total, Desglose y Explicación Jurídica)
+          </button>
+        </div>
+
+        <details class="custom-dropdown">
+          <summary>📐 1. Fórmula empleada y detalle de cálculos paso a paso</summary>
+          <div class="dropdown-content" id="detalleFormulas"></div>
+        </details>
+
+        <details class="custom-dropdown reasoning-box">
+          <summary>⚖️ 2. Explicación jurídica y criterio aplicado para estos cálculos</summary>
+          <div class="dropdown-content" id="detalleRazonamiento"></div>
+        </details>
+      </div>
+
+    </div>
+
+    <!-- BARRA DE ÍCONOS PARALELOS -->
+    <div class="social-institutional-bar">
+      <a href="https://derecho.unc.edu.ar/" target="_blank" rel="noopener noreferrer" class="icon-link-card" title="Visitar sitio oficial de la Facultad de Derecho UNC">
+        <div class="icon-circle unc-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="22" x2="21" y2="22"></line>
+            <line x1="6" y1="18" x2="6" y2="11"></line>
+            <line x1="10" y1="18" x2="10" y2="11"></line>
+            <line x1="14" y1="18" x2="14" y2="11"></line>
+            <line x1="18" y1="18" x2="18" y2="11"></line>
+            <polygon points="12 2 20 7 4 7"></polygon>
+          </svg>
+        </div>
+        <div class="icon-card-text">
+          <span class="small-label">Portal Académico Oficial</span>
+          <strong>Facultad de Derecho • UNC</strong>
+        </div>
+      </a>
+
+      <a href="https://www.instagram.com/_tomiisaavedra/" target="_blank" rel="noopener noreferrer" class="icon-link-card" title="Ir al Instagram del creador (@_tomiisaavedra)">
+        <div class="icon-circle ig-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+        </div>
+        <div class="icon-card-text">
+          <span class="small-label">Redes Sociales del Creador</span>
+          <strong>Instagram • @_tomiisaavedra</strong>
+        </div>
+      </a>
+
+      <a href="mailto:tomas.saavedra.048@mi.unc.edu.ar" class="icon-link-card" title="Enviar correo por dudas a tomas.saavedra.048@mi.unc.edu.ar">
+        <div class="icon-circle gmail-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+        </div>
+        <div class="icon-card-text">
+          <span class="small-label">¿Dudas o Consultas? (Gmail)</span>
+          <strong>tomas.saavedra.048@mi.unc.edu.ar</strong>
+        </div>
+      </a>
+    </div>
+
+    <div class="disclaimer-box">
+      <strong>AVISO LEGAL Y EXENCIÓN DE RESPONSABILIDAD:</strong> La presente herramienta informática (<em>"Calculadora de Indemnizaciones DTSS Cat B 2026 FD UNC | Hecho por Saavedra, Bruno Tomás, Practico 2do Parcial Dr. Paz"</em>) ha sido desarrollada con fines exclusivamente académicos, pedagógicos y orientativos. El creador y desarrollador de esta aplicación queda expresamente <strong>eximido de toda responsabilidad civil, académica, administrativa o de cualquier otra índole</strong> frente a eventuales errores matemáticos, diferencias de criterios interpretativos, desactualizaciones normativas o inexactitudes en los resultados arrojados. Todo cálculo practicado mediante este sistema <strong>debe contar obligatoriamente con su posterior revisión, auditoría y control humano profesional</strong>, dado que esta aplicación bajo ninguna circunstancia suple ni reemplaza el asesoramiento jurídico ni la labor legal que realiza un abogado matriculado.
+    </div>
+
+    <footer>
+      Material de uso académico • Derecho del Trabajo y la Seguridad Social (Cátedra B) • Facultad de Derecho UNC (2026)
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" async defer></script>
+
+  <script>
+    (function() {
+      'use strict';
+
+      var bannerSinJS = document.getElementById('avisoVisorSinJS');
+      if (bannerSinJS) bannerSinJS.style.display = 'none';
+
+      var FECHA_CORTE_MULTAS_ISO = '2024-07-09';
+      var STORAGE_KEY_UNC = 'dtss_catb_unc_saavedra_v2026';
+      var modoFechaTextoActivo = false;
+      var ultimaLiquidacion = null;
+      var timerAlertaSeguridad = null;
+      var _0xMsg = '🔒 Acción bloqueada: No se permite inspeccionar el código, copiar ni pegar (Propiedad Intelectual FD UNC).';
+
+      function mostrarAvisoSeguridad() {
+        var toast = document.getElementById('securityToast');
+        if (!toast) return;
+        toast.textContent = _0xMsg;
+        toast.style.display = 'block';
+        clearTimeout(timerAlertaSeguridad);
+        timerAlertaSeguridad = setTimeout(function() { toast.style.display = 'none'; }, 2500);
+      }
+
+      // Escudo anti-inspección (F12, Ctrl+U, Ctrl+Shift+I/J/C/K, Click derecho, Copy, Cut, Paste)
+      ['contextmenu', 'copy', 'cut', 'paste', 'dragstart'].forEach(function(evName) {
+        document.addEventListener(evName, function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          mostrarAvisoSeguridad();
+          return false;
+        }, true);
+      });
+
+      document.addEventListener('keydown', function(e) {
+        var key = (e.key || '').toLowerCase();
+        var kc = e.keyCode || e.which;
+        var ctrlOrMeta = e.ctrlKey || e.metaKey;
+        var shift = e.shiftKey;
+        var alt = e.altKey;
+
+        if (
+          kc === 123 ||
+          (ctrlOrMeta && shift && ['i', 'j', 'c', 'k'].indexOf(key) !== -1) ||
+          (ctrlOrMeta && alt && ['i', 'j', 'c', 'u'].indexOf(key) !== -1) ||
+          (ctrlOrMeta && ['u', 's', 'c', 'v', 'x', 'p'].indexOf(key) !== -1)
+        ) {
+          e.preventDefault();
+          e.stopPropagation();
+          mostrarAvisoSeguridad();
+          return false;
+        }
+      }, true);
+
+      try {
+        Function.prototype.toString = function() {
+          return 'function () { [Código Encriptado - Propiedad Intelectual Protegida FD UNC] }';
+        };
+      } catch (_err) {}
+
+      // Redondeo financiero exacto a 2 decimales (evita diferencias de 1 centavo por coma flotante IEEE 754)
+      function redondearCentavos(num) {
+        var n = Number(num);
+        if (isNaN(n)) return 0;
+        return Math.round((n + Number.EPSILON) * 100) / 100;
+      }
+
+      // Modo Dual de Carga de Fechas para Celular (Calendario <-> Escritura numérica rápida dd/mm/aaaa)
+      window.alternarModoCargaFechas = function() {
+        modoFechaTextoActivo = !modoFechaTextoActivo;
+        var btn = document.getElementById('btnModoFecha');
+        var inputsFecha = document.querySelectorAll('.input-fecha-dual');
+
+        for (var i = 0; i < inputsFecha.length; i++) {
+          var el = inputsFecha[i];
+          var valActual = el.value;
+          if (modoFechaTextoActivo) {
+            var iso = normalizarFechaISO(valActual);
+            el.type = 'text';
+            el.setAttribute('inputmode', 'numeric');
+            el.placeholder = 'dd/mm/aaaa (Ej: 15032020)';
+            if (iso) el.value = formatearFechaLocal(iso);
+          } else {
+            var iso2 = normalizarFechaISO(valActual);
+            el.type = 'date';
+            el.removeAttribute('inputmode');
+            el.placeholder = '';
+            if (iso2) el.value = iso2;
+          }
+        }
+
+        btn.textContent = modoFechaTextoActivo
+          ? '📅 Cambiar fechas a Modo Calendario'
+          : '⌨️ Cambiar fechas a Escritura Rápida (dd/mm/aaaa)';
+      };
+
+      window.formatearFechaRapidaSiTexto = function(inputEl) {
+        if (!inputEl || inputEl.type !== 'text') return;
+        var digitos = String(inputEl.value || '').replace(/[^0-9]/g, '').slice(0, 8);
+        var out = '';
+        if (digitos.length > 4) {
+          out = digitos.slice(0, 2) + '/' + digitos.slice(2, 4) + '/' + digitos.slice(4);
+        } else if (digitos.length > 2) {
+          out = digitos.slice(0, 2) + '/' + digitos.slice(2);
+        } else {
+          out = digitos;
+        }
+        if (inputEl.value !== out) inputEl.value = out;
+      };
+
+      window.formatearCampoMonedaEnVivo = function(inputEl) {
+        if (!inputEl) return;
+        var valorOriginal = String(inputEl.value || '');
+        var limpio = valorOriginal.replace(/[^0-9,]/g, '');
+        if (!limpio) { inputEl.value = ''; return; }
+        var partes = limpio.split(',');
+        var parteEntera = partes[0].replace(/^0+(?=\d)/, '');
+        var enteroConPuntos = parteEntera.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        var resultado = (partes.length > 1) ? (enteroConPuntos + ',' + partes[1].slice(0, 2)) : enteroConPuntos;
+        if (inputEl.value !== resultado) inputEl.value = resultado;
+      };
+
+      function formatearMonedaARS(numero) {
+        if (isNaN(numero) || numero === null) return '$ 0,00';
+        var redondeado = redondearCentavos(numero);
+        var partes = redondeado.toFixed(2).split('.');
+        var enteroConPuntos = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return '$ ' + enteroConPuntos + ',' + partes[1];
+      }
+
+      function parseMontoARS(valorRaw) {
+        if (valorRaw === null || valorRaw === undefined) return NaN;
+        var str = String(valorRaw).trim().replace(/[^0-9.,]/g, '');
+        if (!str) return NaN;
+        var tieneComa = str.indexOf(',') !== -1;
+        var tienePunto = str.indexOf('.') !== -1;
+        if (tieneComa && tienePunto) {
+          if (str.lastIndexOf(',') > str.lastIndexOf('.')) str = str.replace(/\./g, '').replace(',', '.');
+          else str = str.replace(/,/g, '');
+        } else if (tieneComa) {
+          var partesComa = str.split(',');
+          if (partesComa.length > 2 || (partesComa[1] && partesComa[1].length === 3 && partesComa[0].length <= 3)) str = str.replace(/,/g, '');
+          else str = str.replace(',', '.');
+        } else if (tienePunto) {
+          var partesPunto = str.split('.');
+          if (partesPunto.length > 2 || (partesPunto.length === 2 && partesPunto[1].length === 3)) str = str.replace(/\./g, '');
+        }
+        var num = parseFloat(str);
+        return isNaN(num) ? NaN : num;
+      }
+
+      function obtenerCausalAgravamientoSeleccionada() {
+        var radios = document.getElementsByName('radioAgravamiento');
+        for (var i = 0; i < radios.length; i++) {
+          if (radios[i].checked) return radios[i].value;
+        }
+        return 'embarazo';
+      }
+
+      window.toggleCausaOtrosDiscriminacion = function() {
+        var sel = document.getElementById('causaDiscriminacion').value;
+        document.getElementById('grupoInputCausaOtros').style.display = (sel === 'Otros') ? 'flex' : 'none';
+      };
+
+      window.toggleCheckboxRegistracion = function(cual) {
+        var chkReg = document.getElementById('chkTrabajadorRegistrado');
+        var chkNoReg = document.getElementById('chkTrabajadorNoRegistrado');
+        if (cual === 'registrado') {
+          if (chkReg.checked) chkNoReg.checked = false;
+          else chkNoReg.checked = true;
+        } else {
+          if (chkNoReg.checked) chkReg.checked = false;
+          else chkReg.checked = true;
+        }
+        window.evaluarPeriodoPruebaYVacaciones();
+      };
+
+      function estaRegistradoElTrabajador() {
+        return document.getElementById('chkTrabajadorRegistrado').checked;
+      }
+
+      function esCausalSinPreavisoNiIntegracion() {
+        var tieneAten = document.getElementById('chkAtenuada').checked;
+        if (!tieneAten) return false;
+        var causal = document.getElementById('selectAtenuada').value;
+        var causalesObjetivas = [
+          'muerte_trabajador',
+          'muerte_empleador',
+          'quiebra_no_fraudulenta',
+          'incapacidad_absoluta',
+          'plazo_fijo_cumplido',
+          'rescision_maternidad',
+          'imposibilidad_excedencia'
+        ];
+        return causalesObjetivas.indexOf(causal) !== -1;
+      }
+
+      function mostrarAlertaPantalla(mensaje) {
+        var box = document.getElementById('alertaMovilGlobal');
+        if (!box) return;
+        if (!mensaje) { box.style.display = 'none'; box.innerHTML = ''; return; }
+        box.innerHTML = mensaje;
+        box.style.display = 'block';
+        try { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+      }
+
+      function normalizarFechaISO(fechaRaw) {
+        if (!fechaRaw || typeof fechaRaw !== 'string') return '';
+        var limpio = fechaRaw.trim();
+        if (/^\d{4}-\d{2}-\d{2}$/.test(limpio)) return limpio;
+        var matchBarra = limpio.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+        if (matchBarra) {
+          var d = ('0' + matchBarra[1]).slice(-2);
+          var m = ('0' + matchBarra[2]).slice(-2);
+          var y = matchBarra[3];
+          return y + '-' + m + '-' + d;
+        }
+        return '';
+      }
+
+      function formatearFechaLocal(fechaISO) {
+        var normalizada = normalizarFechaISO(fechaISO);
+        if (!normalizada) return 'dd/mm/aaaa';
+        var partes = normalizada.split('-');
+        return partes[2] + '/' + partes[1] + '/' + partes[0];
+      }
+
+      function dateToISO(fechaObj) {
+        var anio = fechaObj.getFullYear();
+        var mes = ('0' + (fechaObj.getMonth() + 1)).slice(-2);
+        var dia = ('0' + fechaObj.getDate()).slice(-2);
+        return anio + '-' + mes + '-' + dia;
+      }
+
+      function esFechaCompletaValida(fechaRaw) {
+        var iso = normalizarFechaISO(fechaRaw);
+        if (!iso) return false;
+        var partes = iso.split('-');
+        var anio = parseInt(partes[0], 10);
+        var mes = parseInt(partes[1], 10);
+        var dia = parseInt(partes[2], 10);
+        return anio >= 1900 && anio <= 2100 && mes >= 1 && mes <= 12 && dia >= 1 && dia <= 31;
+      }
+
+      function calcularDiferenciaFechas(fechaInicio, fechaFin) {
+        var anios = fechaFin.getFullYear() - fechaInicio.getFullYear();
+        var meses = fechaFin.getMonth() - fechaInicio.getMonth();
+        var dias = fechaFin.getDate() - fechaInicio.getDate();
+        if (dias < 0) {
+          meses--;
+          var ultimoDiaMesAnterior = new Date(fechaFin.getFullYear(), fechaFin.getMonth(), 0).getDate();
+          dias += ultimoDiaMesAnterior;
+        }
+        if (meses < 0) {
+          anios--;
+          meses += 12;
+        }
+        return { anios: anios, meses: meses, dias: dias };
+      }
+
+      function contarDiasHabilesEntreFechas(fInicio, fFin) {
+        var count = 0;
+        var cur = new Date(fInicio.getTime());
+        while (cur <= fFin) {
+          var day = cur.getDay();
+          if (day !== 0 && day !== 6) count++;
+          cur.setDate(cur.getDate() + 1);
+        }
+        return count;
+      }
+
+      // Persistencia inteligente en localStorage
+      window.guardarEstadoLocal = function() {
+        try {
+          var estado = {
+            nombreTrabajador: document.getElementById('nombreTrabajador').value,
+            nombreEmpleador: document.getElementById('nombreEmpleador').value,
+            mrmnh: document.getElementById('mrmnh').value,
+            fechaIngreso: normalizarFechaISO(document.getElementById('fechaIngreso').value),
+            fechaEgreso: normalizarFechaISO(document.getElementById('fechaEgreso').value),
+            registrado: document.getElementById('chkTrabajadorRegistrado').checked,
+            chkAgravamientos: document.getElementById('chkAgravamientos').checked,
+            radioAgrav: obtenerCausalAgravamientoSeleccionada(),
+            causaDiscriminacion: document.getElementById('causaDiscriminacion').value,
+            porcentajeDiscriminatorio: document.getElementById('porcentajeDiscriminatorio').value,
+            textoCausaOtros: document.getElementById('textoCausaOtros').value,
+            cargasFamiliaEnfermedad: document.getElementById('cargasFamiliaEnfermedad').value,
+            fechaAltaEnfermedad: normalizarFechaISO(document.getElementById('fechaAltaEnfermedad').value),
+            tipoCandidato: document.getElementById('tipoCandidato').value,
+            fechaFinTutela: normalizarFechaISO(document.getElementById('fechaFinTutela').value),
+            chkAtenuada: document.getElementById('chkAtenuada').checked,
+            selectAtenuada: document.getElementById('selectAtenuada').value,
+            medioPreaviso: document.getElementById('medioPreaviso').value,
+            chkSacSobreVacaciones: document.getElementById('chkSacSobreVacaciones').checked,
+            chkMultasDerogadas: document.getElementById('chkMultasDerogadas').checked,
+            chkReparacionIntegralPost2024: document.getElementById('chkReparacionIntegralPost2024').checked,
+            fechaIntimacionMultas: normalizarFechaISO(document.getElementById('fechaIntimacionMultas').value),
+            chkLNE8: document.getElementById('chkLNE8').checked,
+            chkLNE9: document.getElementById('chkLNE9').checked,
+            fechaFalsaLNE9: normalizarFechaISO(document.getElementById('fechaFalsaLNE9').value),
+            chkLNE10: document.getElementById('chkLNE10').checked,
+            remuneracionFalsaLNE10: document.getElementById('remuneracionFalsaLNE10').value,
+            chkLNE15: document.getElementById('chkLNE15').checked,
+            chkL25323_1: document.getElementById('chkL25323_1').checked,
+            chkL25323_2: document.getElementById('chkL25323_2').checked,
+            chkArt80LCT: document.getElementById('chkArt80LCT').checked,
+            chkTopeGremial: document.getElementById('chkTopeGremial').checked,
+            modoCargaTope: document.getElementById('modoCargaTope').value,
+            valorInputTope: document.getElementById('valorInputTope').value
+          };
+          localStorage.setItem(STORAGE_KEY_UNC, JSON.stringify(estado));
+        } catch (_e) {}
+      };
+
+      function restaurarEstadoLocal() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY_UNC);
+          if (!raw) return;
+          var st = JSON.parse(raw);
+          if (!st) return;
+
+          if (st.nombreTrabajador) document.getElementById('nombreTrabajador').value = st.nombreTrabajador;
+          if (st.nombreEmpleador) document.getElementById('nombreEmpleador').value = st.nombreEmpleador;
+          if (st.mrmnh) document.getElementById('mrmnh').value = st.mrmnh;
+          if (st.fechaIngreso) document.getElementById('fechaIngreso').value = st.fechaIngreso;
+          if (st.fechaEgreso) document.getElementById('fechaEgreso').value = st.fechaEgreso;
+
+          document.getElementById('chkTrabajadorRegistrado').checked = (st.registrado !== false);
+          document.getElementById('chkTrabajadorNoRegistrado').checked = (st.registrado === false);
+
+          document.getElementById('chkAgravamientos').checked = !!st.chkAgravamientos;
+          document.getElementById('chkAtenuada').checked = !!st.chkAtenuada;
+          if (st.radioAgrav) {
+            var radios = document.getElementsByName('radioAgravamiento');
+            for (var i = 0; i < radios.length; i++) {
+              radios[i].checked = (radios[i].value === st.radioAgrav);
+            }
+          }
+          if (st.causaDiscriminacion) document.getElementById('causaDiscriminacion').value = st.causaDiscriminacion;
+          if (st.porcentajeDiscriminatorio) document.getElementById('porcentajeDiscriminatorio').value = st.porcentajeDiscriminatorio;
+          if (st.textoCausaOtros) document.getElementById('textoCausaOtros').value = st.textoCausaOtros;
+          if (st.cargasFamiliaEnfermedad) document.getElementById('cargasFamiliaEnfermedad').value = st.cargasFamiliaEnfermedad;
+          if (st.fechaAltaEnfermedad) document.getElementById('fechaAltaEnfermedad').value = st.fechaAltaEnfermedad;
+          if (st.tipoCandidato) document.getElementById('tipoCandidato').value = st.tipoCandidato;
+          if (st.fechaFinTutela) document.getElementById('fechaFinTutela').value = st.fechaFinTutela;
+          if (st.selectAtenuada) document.getElementById('selectAtenuada').value = st.selectAtenuada;
+          if (st.medioPreaviso) document.getElementById('medioPreaviso').value = st.medioPreaviso;
+
+          document.getElementById('chkSacSobreVacaciones').checked = !!st.chkSacSobreVacaciones;
+          document.getElementById('chkMultasDerogadas').checked = !!st.chkMultasDerogadas;
+          document.getElementById('chkReparacionIntegralPost2024').checked = !!st.chkReparacionIntegralPost2024;
+          if (st.fechaIntimacionMultas) document.getElementById('fechaIntimacionMultas').value = st.fechaIntimacionMultas;
+          document.getElementById('chkLNE8').checked = !!st.chkLNE8;
+          document.getElementById('chkLNE9').checked = !!st.chkLNE9;
+          if (st.fechaFalsaLNE9) document.getElementById('fechaFalsaLNE9').value = st.fechaFalsaLNE9;
+          document.getElementById('chkLNE10').checked = !!st.chkLNE10;
+          if (st.remuneracionFalsaLNE10) document.getElementById('remuneracionFalsaLNE10').value = st.remuneracionFalsaLNE10;
+          document.getElementById('chkLNE15').checked = !!st.chkLNE15;
+          document.getElementById('chkL25323_1').checked = !!st.chkL25323_1;
+          document.getElementById('chkL25323_2').checked = !!st.chkL25323_2;
+          document.getElementById('chkArt80LCT').checked = !!st.chkArt80LCT;
+
+          document.getElementById('chkTopeGremial').checked = !!st.chkTopeGremial;
+          if (st.modoCargaTope) document.getElementById('modoCargaTope').value = st.modoCargaTope;
+          if (st.valorInputTope) document.getElementById('valorInputTope').value = st.valorInputTope;
+
+          window.toggleCausaOtrosDiscriminacion();
+          window.sincronizarModificadores(st.chkAgravamientos ? 'agravamientos' : (st.chkAtenuada ? 'atenuada' : ''));
+          window.actualizarEstiloSacVacaciones();
+          window.aplicarToggleMultas();
+          window.aplicarToggleTopeGremial();
+          window.actualizarPrevisualizacion();
+          window.actualizarPrevisualizacionTope();
+          window.evaluarPeriodoPruebaYVacaciones();
+        } catch (_err) {}
+      }
+
+      window.evaluarPeriodoPruebaYVacaciones = function() {
+        var fechaIngStr = normalizarFechaISO(document.getElementById('fechaIngreso').value);
+        var fechaEgrStr = normalizarFechaISO(document.getElementById('fechaEgreso').value);
+        var registrado = estaRegistradoElTrabajador();
+
+        var panelPrueba = document.getElementById('panelDetectorPrueba');
+        var textoPrueba = document.getElementById('textoDetectorPrueba');
+        var textoVac20 = document.getElementById('textoDetectorVacaciones20');
+
+        if (!registrado) {
+          panelPrueba.className = 'permanent-feature-box alert-negro';
+          textoPrueba.innerHTML = '<strong>🚫 Empleo No Registrado («En negro» — Art. 92 bis LCT):</strong> Al haberse tildado que el vínculo NO estaba registrado, el sistema excluye automáticamente el Período de Prueba y liquida indemnización completa.';
+        } else {
+          panelPrueba.className = 'permanent-feature-box';
+        }
+
+        if (!esFechaCompletaValida(fechaIngStr) || !esFechaCompletaValida(fechaEgrStr)) {
+          if (registrado) {
+            textoPrueba.innerHTML = 'ℹ️ Vínculo registrado seleccionado. Al completar las fechas de ingreso y egreso, el sistema aplicará automáticamente el Período de Prueba si la antigüedad no supera los 6 meses.';
+          }
+          return;
+        }
+
+        var fIng = new Date(fechaIngStr + 'T00:00:00');
+        var fEgr = new Date(fechaEgrStr + 'T00:00:00');
+        if (fEgr < fIng) return;
+
+        var dif = calcularDiferenciaFechas(fIng, fEgr);
+        var menorSeisMesesAntiguedadTotal = (dif.anios === 0) && (dif.meses < 6 || (dif.meses === 6 && dif.dias === 0));
+
+        if (registrado) {
+          if (menorSeisMesesAntiguedadTotal) {
+            textoPrueba.innerHTML = '<strong>✅ Período de Prueba Aplicado Automáticamente (Art. 92 bis LCT):</strong> Antigüedad de <b>' + dif.meses + ' mes(es) y ' + dif.dias + ' día(s)</b> con vínculo registrado (dentro de los 6 meses legales). Se exime automáticamente Indemnización por Antigüedad (Art. 245) e Integración del Mes (Art. 233).';
+          } else {
+            textoPrueba.innerHTML = '<strong>ℹ️ Régimen Indemnizatorio Ordinario Aplicado Automáticamente:</strong> La antigüedad (' + dif.anios + 'a, ' + dif.meses + 'm y ' + dif.dias + 'd) supera el Período de Prueba del Art. 92 bis LCT. Se liquida Art. 245 LCT.';
+          }
+        }
+
+        var estrictamenteMenorSeisMeses = (dif.anios === 0) && (dif.meses < 6);
+        if (estrictamenteMenorSeisMeses) {
+          var habilesCalculados = contarDiasHabilesEntreFechas(fIng, fEgr);
+          var diasVacResult = (habilesCalculados / 20).toFixed(2);
+          textoVac20.innerHTML = '<strong>📅 Regla Aplicada Automáticamente: 1 día de descanso cada 20 días de trabajo efectivo (Art. 153 LCT):</strong> Como la antigüedad total en el empleo (' + dif.meses + 'm y ' + dif.dias + 'd) no llega a la mitad de los días hábiles del año, el sistema computa automáticamente los <b>' + habilesCalculados + ' días hábiles trabajados ÷ 20 = ' + diasVacResult + ' días de vacaciones</b>.';
+        } else {
+          var finAnioProyectado = new Date(fEgr.getFullYear(), 11, 31);
+          var difAl31Dic = calcularDiferenciaFechas(fIng, finAnioProyectado);
+          var escalaProy = 14;
+          if (difAl31Dic.anios > 20) escalaProy = 35;
+          else if (difAl31Dic.anios > 10) escalaProy = 28;
+          else if (difAl31Dic.anios > 5) escalaProy = 21;
+
+          textoVac20.innerHTML = '<strong>📅 Regla Aplicada Automáticamente: Proporción de la Escala Anual proyectada al 31/12 (Arts. 150 y 156 LCT):</strong> El trabajador supera los 6 meses de antigüedad total en el empleo y al <b>31/12/' + fEgr.getFullYear() + '</b> computa <b>' + difAl31Dic.anios + ' año(s) y ' + difAl31Dic.meses + ' mes(es)</b> (Escala aplicable: <b>' + escalaProy + ' días</b>).';
+        }
+      };
+
+      window.actualizarPrevisualizacion = function() {
+        mostrarAlertaPantalla('');
+        var mrmnhVal = parseMontoARS(document.getElementById('mrmnh').value);
+        var fechaIng = document.getElementById('fechaIngreso').value;
+        var fechaEgr = document.getElementById('fechaEgreso').value;
+        var medioPrev = document.getElementById('medioPreaviso').value;
+
+        document.getElementById('preview-mrmnh').textContent =
+          (!isNaN(mrmnhVal) && mrmnhVal > 0) ? ('Formato ARS: ' + formatearMonedaARS(mrmnhVal)) : 'Formato ARS: $ 0,00';
+        document.getElementById('preview-ingreso').textContent = 'Formato: ' + formatearFechaLocal(fechaIng);
+        document.getElementById('preview-egreso').textContent = 'Formato: ' + formatearFechaLocal(fechaEgr);
+
+        if (esCausalSinPreavisoNiIntegracion()) {
+          document.getElementById('preview-preaviso').textContent = 'Causal objetiva/natural seleccionada: No proceden Preaviso ni Integración ($ 0,00)';
+        } else {
+          document.getElementById('preview-preaviso').textContent =
+            (medioPrev === 'si') ? 'Estado actual: Preaviso otorgado ($ 0,00 en arts. 232 y 233)' : 'Estado actual: Preaviso omitido (se liquida sustitutiva e integración)';
+        }
+      };
+
+      window.sincronizarModificadores = function(cual) {
+        var chkAgrav = document.getElementById('chkAgravamientos');
+        var cardAgrav = document.getElementById('card-agravamientos');
+        var pillAgrav = document.getElementById('pill-agravamientos');
+
+        var chkAten = document.getElementById('chkAtenuada');
+        var cardAten = document.getElementById('card-atenuada');
+        var pillAten = document.getElementById('pill-atenuada');
+
+        if (cual === 'agravamientos' && chkAgrav.checked) {
+          chkAten.checked = false;
+          cardAten.classList.remove('active-atenuada');
+          cardAgrav.classList.add('active-agravamiento');
+          pillAgrav.textContent = 'Activo (Atenuada excluida)';
+          pillAgrav.className = 'exclusion-pill pill-active';
+          pillAten.textContent = 'Excluido por Agravamiento';
+          pillAten.className = 'exclusion-pill pill-excluded';
+          window.actualizarTextoInformativoTopes();
+        } else if (cual === 'atenuada' && chkAten.checked) {
+          chkAgrav.checked = false;
+          cardAgrav.classList.remove('active-agravamiento');
+          cardAten.classList.add('active-atenuada');
+          pillAten.textContent = 'Activo (Agravamientos excluidos)';
+          pillAten.className = 'exclusion-pill pill-active';
+          pillAgrav.textContent = 'Excluido por Atenuación';
+          pillAgrav.className = 'exclusion-pill pill-excluded';
+        } else {
+          if (!chkAgrav.checked) {
+            cardAgrav.classList.remove('active-agravamiento');
+            pillAgrav.textContent = 'Excluye Indemnización Atenuada';
+            pillAgrav.className = 'exclusion-pill';
+          }
+          if (!chkAten.checked) {
+            cardAten.classList.remove('active-atenuada');
+            pillAten.textContent = 'Excluye Agravamientos Indemnizatorios';
+            pillAten.className = 'exclusion-pill';
+          }
+        }
+        window.actualizarPrevisualizacion();
+      };
+
+      window.actualizarEstiloSacVacaciones = function() {
+        var chk = document.getElementById('chkSacSobreVacaciones');
+        var card = document.getElementById('card-sac-vacaciones');
+        if (chk.checked) card.classList.add('active-agravamiento');
+        else card.classList.remove('active-agravamiento');
+      };
+
+      function obtenerTopeLicenciaArt208() {
+        var fechaIngStr = normalizarFechaISO(document.getElementById('fechaIngreso').value);
+        var fechaEgrStr = normalizarFechaISO(document.getElementById('fechaEgreso').value);
+        var cargas = document.getElementById('cargasFamiliaEnfermedad').value;
+
+        if (!esFechaCompletaValida(fechaIngStr) || !esFechaCompletaValida(fechaEgrStr)) return null;
+        var fIng = new Date(fechaIngStr + 'T00:00:00');
+        var fEgr = new Date(fechaEgrStr + 'T00:00:00');
+        if (fEgr < fIng) return null;
+
+        var dif = calcularDiferenciaFechas(fIng, fEgr);
+        var tieneCincoAniosOMas = dif.anios >= 5;
+
+        var maxMeses = 3;
+        if (!tieneCincoAniosOMas && cargas === 'sin_cargas') maxMeses = 3;
+        if (!tieneCincoAniosOMas && cargas === 'con_cargas') maxMeses = 6;
+        if (tieneCincoAniosOMas && cargas === 'sin_cargas') maxMeses = 6;
+        if (tieneCincoAniosOMas && cargas === 'con_cargas') maxMeses = 12;
+
+        var fechaMax = new Date(fEgr.getTime());
+        fechaMax.setMonth(fechaMax.getMonth() + maxMeses);
+
+        return { maxMeses: maxMeses, tieneCincoAniosOMas: tieneCincoAniosOMas, cargas: cargas, fechaMinISO: fechaEgrStr, fechaMaxISO: dateToISO(fechaMax) };
+      }
+
+      window.cambiarModoInputTutela = function() {
+        var tipoCand = document.getElementById('tipoCandidato').value;
+        var labelTut = document.getElementById('labelFechaFinTutela');
+        var inputTut = document.getElementById('fechaFinTutela');
+        var errorBox = document.getElementById('errorBoxTutela');
+
+        inputTut.classList.remove('input-error');
+        errorBox.style.display = 'none';
+
+        if (tipoCand === 'electo_posmandato') {
+          labelTut.textContent = 'Fecha en la cual cesó su cargo / mandato gremial:';
+        } else if (tipoCand === 'no_electo') {
+          labelTut.textContent = 'Fecha en que vencen los 6 meses de tutela del candidato no electo:';
+        } else {
+          labelTut.textContent = 'Fecha en que finaliza el mandato gremial vigente (máx. 48 meses):';
+        }
+      };
+
+      function obtenerTopeTutelaSindical() {
+        var fechaEgrStr = normalizarFechaISO(document.getElementById('fechaEgreso').value);
+        var tipoCand = document.getElementById('tipoCandidato').value;
+
+        if (!esFechaCompletaValida(fechaEgrStr)) return null;
+        var fEgr = new Date(fechaEgrStr + 'T00:00:00');
+
+        if (tipoCand === 'electo_posmandato') {
+          var fechaMinCeseCargo = new Date(fEgr.getTime());
+          fechaMinCeseCargo.setMonth(fechaMinCeseCargo.getMonth() - 12);
+          return {
+            tipoCand: tipoCand,
+            modo: 'CESE_CARGO',
+            fechaMinCeseISO: dateToISO(fechaMinCeseCargo),
+            fechaMaxCeseISO: fechaEgrStr,
+            descripcionRegla: 'Candidato Electo en curso de tutela posmandato (Arts. 48 y 52 Ley 23.551): Ingrese la <b>fecha en la cual cesó su cargo</b> (entre el <b>' + formatearFechaLocal(dateToISO(fechaMinCeseCargo)) + '</b> y el <b>' + formatearFechaLocal(fechaEgrStr) + '</b>). Se liquidan los salarios restantes más el SAC proporcional.'
+          };
+        }
+
+        var maxMesesCalendario = 6;
+        var mesesEstabilidadExtra = 12;
+        var descripcionRegla = '';
+
+        if (tipoCand === 'no_electo') {
+          maxMesesCalendario = 6;
+          mesesEstabilidadExtra = 12;
+          descripcionRegla = 'Candidato No Electo (Arts. 50 y 52 Ley 23.551): La tutela dura hasta 6 meses; si es despedido en ese lapso tiene derecho al período restante de esos 6 meses <b>más el importe de un (1) año más de indemnizaciones (12 meses) más SAC</b>.';
+        } else if (tipoCand === 'electo_mandato') {
+          maxMesesCalendario = 48;
+          mesesEstabilidadExtra = 12;
+          descripcionRegla = 'Candidato Electo con mandato vigente (Arts. 42, 48 y 52 Ley 23.551): Mandato restante (máx. 48 meses) + 12 meses de estabilidad posterior + SAC completo y proporcional (12 meses = 13 sueldos).';
+        }
+
+        var fechaMax = new Date(fEgr.getTime());
+        fechaMax.setMonth(fechaMax.getMonth() + maxMesesCalendario);
+
+        return {
+          tipoCand: tipoCand,
+          modo: 'VENCIMIENTO_FUTURO',
+          maxMesesCalendario: maxMesesCalendario,
+          mesesEstabilidadExtra: mesesEstabilidadExtra,
+          descripcionRegla: descripcionRegla,
+          fechaMinISO: fechaEgrStr,
+          fechaMaxISO: dateToISO(fechaMax)
+        };
+      }
+
+      window.actualizarTextoInformativoTopes = function() {
+        var infoEnf = document.getElementById('infoTopeEnfermedad');
+        var topeEnf = obtenerTopeLicenciaArt208();
+        if (topeEnf) {
+          var textoAntig = topeEnf.tieneCincoAniosOMas ? 'mayor o igual a 5 años' : 'menor a 5 años';
+          var textoCargas = (topeEnf.cargas === 'con_cargas') ? 'con cargas de familia' : 'sin cargas de familia';
+          infoEnf.innerHTML = '<strong>Pauta normativa (Art. 208 LCT):</strong> Para antigüedad <b>' + textoAntig + '</b> y <b>' + textoCargas + '</b>, el límite máximo de licencia paga es de <b>' + topeEnf.maxMeses + ' meses</b> (hasta el <b>' + formatearFechaLocal(topeEnf.fechaMaxISO) + '</b>).';
+        }
+
+        var infoTut = document.getElementById('infoTopeTutela');
+        var topeTut = obtenerTopeTutelaSindical();
+        if (topeTut) {
+          if (topeTut.modo === 'CESE_CARGO') {
+            infoTut.innerHTML = '<strong>Pauta normativa (Ley 23.551 + SAC):</strong> ' + topeTut.descripcionRegla;
+          } else {
+            infoTut.innerHTML = '<strong>Pauta normativa (Ley 23.551 + SAC):</strong> ' + topeTut.descripcionRegla + ' Fecha límite máxima de tutela en curso: <b>' + formatearFechaLocal(topeTut.fechaMaxISO) + '</b>.';
+          }
+        }
+      };
+
+      window.previsualizarFechaEnfermedad = function() {
+        var inputAlta = document.getElementById('fechaAltaEnfermedad');
+        var previewAlta = document.getElementById('preview-fecha-alta');
+        var errorBox = document.getElementById('errorBoxEnfermedad');
+        inputAlta.classList.remove('input-error');
+        errorBox.style.display = 'none';
+        previewAlta.textContent = inputAlta.value ? ('Fecha ingresada: ' + formatearFechaLocal(inputAlta.value)) : 'Escriba la fecha estimada (dd/mm/aaaa)';
+      };
+
+      window.previsualizarFechaTutela = function() {
+        var inputTutela = document.getElementById('fechaFinTutela');
+        var previewTutela = document.getElementById('preview-fecha-tutela');
+        var errorBox = document.getElementById('errorBoxTutela');
+        inputTutela.classList.remove('input-error');
+        errorBox.style.display = 'none';
+        previewTutela.textContent = inputTutela.value ? ('Fecha ingresada: ' + formatearFechaLocal(inputTutela.value)) : 'Escriba la fecha manualmente (dd/mm/aaaa)';
+      };
+
+      window.verificarEnfermedadPostCarga = function(forzarAlertaGlobal) {
+        var inputAlta = document.getElementById('fechaAltaEnfermedad');
+        var errorBox = document.getElementById('errorBoxEnfermedad');
+        var valor = normalizarFechaISO(inputAlta.value);
+
+        if (!esFechaCompletaValida(valor)) return true;
+        var datosTope = obtenerTopeLicenciaArt208();
+        if (!datosTope) return true;
+
+        if (valor < datosTope.fechaMinISO) {
+          var msg1 = 'Error de incoherencia legal (Art. 213 LCT): La fecha de alta o cese de licencia que ingresó (' + formatearFechaLocal(valor) + ') es anterior a la fecha de egreso (' + formatearFechaLocal(datosTope.fechaMinISO) + ').';
+          inputAlta.classList.add('input-error');
+          errorBox.textContent = msg1;
+          errorBox.style.display = 'block';
+          if (forzarAlertaGlobal) mostrarAlertaPantalla(msg1);
+          return false;
+        }
+
+        if (valor > datosTope.fechaMaxISO) {
+          var msg2 = 'Error de incoherencia legal (Art. 208 LCT): La fecha que ingresó (' + formatearFechaLocal(valor) + ') supera el plazo máximo legal de ' + datosTope.maxMeses + ' meses de licencia paga permitido para este trabajador (fecha máxima admisible: ' + formatearFechaLocal(datosTope.fechaMaxISO) + ').';
+          inputAlta.classList.add('input-error');
+          errorBox.textContent = msg2;
+          errorBox.style.display = 'block';
+          if (forzarAlertaGlobal) mostrarAlertaPantalla(msg2);
+          return false;
+        }
+
+        inputAlta.classList.remove('input-error');
+        errorBox.style.display = 'none';
+        return true;
+      };
+
+      window.verificarTutelaPostCarga = function(forzarAlertaGlobal) {
+        var inputTutela = document.getElementById('fechaFinTutela');
+        var errorBox = document.getElementById('errorBoxTutela');
+        var valor = normalizarFechaISO(inputTutela.value);
+
+        if (!esFechaCompletaValida(valor)) return true;
+        var datosTope = obtenerTopeTutelaSindical();
+        if (!datosTope) return true;
+
+        if (datosTope.modo === 'CESE_CARGO') {
+          if (valor > datosTope.fechaMaxCeseISO) {
+            var m1 = 'Error de incoherencia legal (Ley 23.551): Seleccionó que el trabajador ya estaba en el período posmandato, pero puso una fecha de cese del cargo (' + formatearFechaLocal(valor) + ') posterior a la fecha de despido (' + formatearFechaLocal(datosTope.fechaMaxCeseISO) + ').';
+            inputTutela.classList.add('input-error');
+            errorBox.textContent = m1;
+            errorBox.style.display = 'block';
+            if (forzarAlertaGlobal) mostrarAlertaPantalla(m1);
+            return false;
+          }
+          if (valor <= datosTope.fechaMinCeseISO) {
+            var m2 = 'Error de incoherencia legal (Ley 23.551): Según la fecha de cese del cargo ingresada (' + formatearFechaLocal(valor) + '), el año de tutela posmandato (12 meses) ya se encontraba vencido al momento del despido (' + formatearFechaLocal(datosTope.fechaMaxCeseISO) + ').';
+            inputTutela.classList.add('input-error');
+            errorBox.textContent = m2;
+            errorBox.style.display = 'block';
+            if (forzarAlertaGlobal) mostrarAlertaPantalla(m2);
+            return false;
+          }
+        } else {
+          if (valor < datosTope.fechaMinISO) {
+            var m3 = 'Error de incoherencia legal (Ley 23.551): La fecha de fin de tutela que ingresó (' + formatearFechaLocal(valor) + ') es anterior a la fecha de egreso (' + formatearFechaLocal(datosTope.fechaMinISO) + ').';
+            inputTutela.classList.add('input-error');
+            errorBox.textContent = m3;
+            errorBox.style.display = 'block';
+            if (forzarAlertaGlobal) mostrarAlertaPantalla(m3);
+            return false;
+          }
+          if (valor > datosTope.fechaMaxISO) {
+            var m4 = 'Error de incoherencia legal (Ley 23.551): La fecha que ingresó (' + formatearFechaLocal(valor) + ') excede el límite legal máximo de ' + datosTope.maxMesesCalendario + ' meses desde el egreso para esta categoría gremial (fecha tope máxima: ' + formatearFechaLocal(datosTope.fechaMaxISO) + ').';
+            inputTutela.classList.add('input-error');
+            errorBox.textContent = m4;
+            errorBox.style.display = 'block';
+            if (forzarAlertaGlobal) mostrarAlertaPantalla(m4);
+            return false;
+          }
+        }
+
+        inputTutela.classList.remove('input-error');
+        errorBox.style.display = 'none';
+        return true;
+      };
+
+      function esCasoAnteriorAlNueveDeJulio2024() {
+        var fechaEgrStr = normalizarFechaISO(document.getElementById('fechaEgreso').value);
+        var fechaIntStr = normalizarFechaISO(document.getElementById('fechaIntimacionMultas').value);
+
+        if (esFechaCompletaValida(fechaEgrStr) && fechaEgrStr < FECHA_CORTE_MULTAS_ISO) return true;
+        if (esFechaCompletaValida(fechaIntStr) && fechaIntStr < FECHA_CORTE_MULTAS_ISO) return true;
+        return false;
+      }
+
+      window.evaluarVigenciaMultas = function() {
+        var banner = document.getElementById('bannerEstadoMultas');
+        var chkRepIntegral = document.getElementById('chkReparacionIntegralPost2024');
+        var fechaEgrStr = normalizarFechaISO(document.getElementById('fechaEgreso').value);
+        var fechaIntStr = normalizarFechaISO(document.getElementById('fechaIntimacionMultas').value);
+        var previewInt = document.getElementById('preview-intimacion-multas');
+
+        previewInt.textContent = fechaIntStr
+          ? ('Fecha de intimación ingresada: ' + formatearFechaLocal(fechaIntStr))
+          : 'Si no hubo intimación previa, se evalúa con la Fecha de Egreso';
+
+        if (!esFechaCompletaValida(fechaEgrStr) && !esFechaCompletaValida(fechaIntStr)) {
+          banner.className = 'multas-status-banner';
+          banner.innerHTML = 'ℹ️ Verifique la fecha de egreso en el Segmento 1 o tilde la casilla de <strong>Reparación Integral</strong> para incluir este sector con posterioridad al <strong>09/07/2024</strong>.';
+          return;
+        }
+
+        if (esCasoAnteriorAlNueveDeJulio2024()) {
+          banner.className = 'multas-status-banner';
+          banner.innerHTML = '<strong>✅ Habilitado por Derecho Transitorio (Pre-09/07/2024):</strong> El despido o la intimación fehaciente es anterior al <strong>09/07/2024</strong>. Se aplican de pleno derecho las multas seleccionadas.';
+          document.getElementById('errorBoxMultas').style.display = 'none';
+        } else {
+          if (chkRepIntegral.checked) {
+            banner.className = 'multas-status-banner';
+            banner.innerHTML = '<strong>⚖️ Habilitado vía Reparación Integral (Post-09/07/2024):</strong> Se cuantifican los rubros sancionatorios seleccionados como pauta objetiva de <em>reparación integral de daños / planteo de inconstitucionalidad</em>.';
+            document.getElementById('errorBoxMultas').style.display = 'none';
+          } else {
+            banner.className = 'multas-status-banner bloqueado';
+            banner.innerHTML = '<strong>⚠️ Fecha posterior al 09/07/2024:</strong> Para incluir las multas en esta fecha, tilde la casilla <strong>"Habilitar e incluir este sector en despidos posteriores al 09/07/2024 vía Reparación Integral"</strong> que aparece aquí abajo.';
+          }
+        }
+      };
+
+      window.verificarFechaMultasPostCarga = function(forzarAlertaGlobal) {
+        var chkMultas = document.getElementById('chkMultasDerogadas');
+        var chkRepIntegral = document.getElementById('chkReparacionIntegralPost2024');
+        var errorBox = document.getElementById('errorBoxMultas');
+        if (!chkMultas.checked) return true;
+
+        var fechaEgrStr = normalizarFechaISO(document.getElementById('fechaEgreso').value);
+        var fechaIntStr = normalizarFechaISO(document.getElementById('fechaIntimacionMultas').value);
+
+        if (!esFechaCompletaValida(fechaEgrStr) && !esFechaCompletaValida(fechaIntStr)) return true;
+
+        if (!esCasoAnteriorAlNueveDeJulio2024() && !chkRepIntegral.checked) {
+          var msg = 'El despido e intimación son posteriores al 09/07/2024. Tilde la casilla "Habilitar e incluir este sector en despidos posteriores al 09/07/2024 vía Reparación Integral" dentro del Segmento 4 para poder sumarlo.';
+          errorBox.textContent = msg;
+          errorBox.style.display = 'block';
+          if (forzarAlertaGlobal) mostrarAlertaPantalla(msg);
+          return false;
+        }
+
+        errorBox.style.display = 'none';
+        return true;
+      };
+
+      window.aplicarToggleMultas = function() {
+        var chk = document.getElementById('chkMultasDerogadas');
+        var card = document.getElementById('card-multas');
+        if (chk.checked) {
+          card.classList.add('active-multas');
+          window.evaluarVigenciaMultas();
+        } else {
+          card.classList.remove('active-multas');
+        }
+      };
+
+      window.sincronizarExclusionMultas = function(origen) {
+        var chk8 = document.getElementById('chkLNE8');
+        var chk9 = document.getElementById('chkLNE9');
+        var chk10 = document.getElementById('chkLNE10');
+        var chk15 = document.getElementById('chkLNE15');
+        var chk25323_1 = document.getElementById('chkL25323_1');
+        var chk25323_2 = document.getElementById('chkL25323_2');
+
+        if ((origen === 'L25323_1' && chk25323_1.checked) || (origen === 'L25323_2' && chk25323_2.checked)) {
+          chk8.checked = false;
+          chk9.checked = false;
+          chk10.checked = false;
+          chk15.checked = false;
+        } else if (origen === 'LNE8' || origen === 'LNE9' || origen === 'LNE10' || origen === 'LNE15') {
+          if (chk8.checked || chk9.checked || chk10.checked || chk15.checked) {
+            chk25323_1.checked = false;
+            chk25323_2.checked = false;
+          }
+          if (origen === 'LNE8' && chk8.checked) {
+            chk9.checked = false;
+            chk10.checked = false;
+          }
+          if ((origen === 'LNE9' && chk9.checked) || (origen === 'LNE10' && chk10.checked)) {
+            chk8.checked = false;
+          }
+        }
+      };
+
+      window.aplicarToggleTopeGremial = function() {
+        var chkTope = document.getElementById('chkTopeGremial');
+        var cardTope = document.getElementById('card-tope-gremial');
+        if (chkTope.checked) {
+          cardTope.classList.add('active-tope');
+          window.cambiarModoCargaTope();
+        } else {
+          cardTope.classList.remove('active-tope');
+        }
+      };
+
+      window.cambiarModoCargaTope = function() {
+        var modo = document.getElementById('modoCargaTope').value;
+        var label = document.getElementById('labelValorInputTope');
+        var input = document.getElementById('valorInputTope');
+
+        if (modo === 'promedio') {
+          label.textContent = 'Monto del PROMEDIO salarial del CCT ($ ARS — se multiplicará × 3):';
+          input.placeholder = 'Ej: 600.000';
+        } else {
+          label.textContent = 'Monto del TOPE GREMIAL ya establecido ($ ARS — NO se multiplica × 3):';
+          input.placeholder = 'Ej: 1.800.000';
+        }
+        window.actualizarPrevisualizacionTope();
+      };
+
+      function evaluarTopeGremial(mrmnh) {
+        var activo = document.getElementById('chkTopeGremial').checked;
+        var modo = document.getElementById('modoCargaTope').value;
+        var valorIngresado = parseMontoARS(document.getElementById('valorInputTope').value);
+        var piso67 = (!isNaN(mrmnh) && mrmnh > 0) ? redondearCentavos(mrmnh * 0.67) : 0;
+
+        if (!activo) {
+          return { activo: false, invalido: false, modo: modo, valorIngresado: 0, topeCalculado: 0, piso67: piso67, baseArt245Efectiva: mrmnh, casoAplicado: 'SIN_TOPE', etiquetaCorta: '100% MRMNH (Sin Tope)' };
+        }
+
+        if (isNaN(valorIngresado) || valorIngresado <= 0) {
+          return { activo: true, invalido: true, modo: modo, valorIngresado: 0, topeCalculado: 0, piso67: piso67, baseArt245Efectiva: mrmnh };
+        }
+
+        var topeCalculado = redondearCentavos((modo === 'promedio') ? (valorIngresado * 3) : valorIngresado);
+        var baseArt245Efectiva = mrmnh;
+        var casoAplicado = 'NO_SUPERA_TOPE';
+        var etiquetaCorta = 'Art. 245 (MRMNH <= Tope)';
+
+        if (mrmnh > topeCalculado) {
+          if (topeCalculado >= piso67) {
+            baseArt245Efectiva = topeCalculado;
+            casoAplicado = 'APLICA_TOPE_GREMIAL';
+            etiquetaCorta = 'Art. 245 (Con Tope Gremial)';
+          } else {
+            baseArt245Efectiva = piso67;
+            casoAplicado = 'APLICA_PISO_67_VIZZOTI';
+            etiquetaCorta = 'Art. 245 (Piso 67% MRMNH)';
+          }
+        }
+
+        return { activo: true, invalido: false, modo: modo, valorIngresado: valorIngresado, topeCalculado: topeCalculado, piso67: piso67, baseArt245Efectiva: baseArt245Efectiva, casoAplicado: casoAplicado, etiquetaCorta: etiquetaCorta };
+      }
+
+      window.actualizarPrevisualizacionTope = function() {
+        var mrmnh = parseMontoARS(document.getElementById('mrmnh').value) || 0;
+        var valorInput = parseMontoARS(document.getElementById('valorInputTope').value);
+        var modo = document.getElementById('modoCargaTope').value;
+        var previewHint = document.getElementById('preview-valor-tope');
+        var boxResumen = document.getElementById('resumenVivoTope');
+
+        if (!isNaN(valorInput) && valorInput > 0) {
+          previewHint.textContent = (modo === 'promedio')
+            ? ('Formato ARS: ' + formatearMonedaARS(valorInput) + ' -> Tope (x 3): ' + formatearMonedaARS(valorInput * 3))
+            : ('Formato ARS (Tope fijo): ' + formatearMonedaARS(valorInput));
+        } else {
+          previewHint.textContent = 'Formato ARS: $ 0,00';
+        }
+
+        if (mrmnh <= 0 || isNaN(valorInput) || valorInput <= 0) {
+          boxResumen.innerHTML = '<strong>Estado del Tope Gremial (Art. 245 LCT):</strong> Ingrese la MRMNH en el Segmento 1 y el monto convencional aquí para comparar el Tope con el piso mínimo del 67% de la MRMNH.';
+          return;
+        }
+
+        var evalTope = evaluarTopeGremial(mrmnh);
+        var explicacionOrigenTope = (evalTope.modo === 'promedio')
+          ? ('Promedio CCT (' + formatearMonedaARS(evalTope.valorIngresado) + ') x 3 = <b>' + formatearMonedaARS(evalTope.topeCalculado) + '</b>')
+          : ('Tope fijo establecido (sin multiplicar) = <b>' + formatearMonedaARS(evalTope.topeCalculado) + '</b>');
+
+        var decisionTexto = '';
+        if (evalTope.casoAplicado === 'NO_SUPERA_TOPE') {
+          decisionTexto = 'La MRMNH (' + formatearMonedaARS(mrmnh) + ') <b>no supera</b> el Tope Gremial (' + formatearMonedaARS(evalTope.topeCalculado) + '). Se toma el <b>100% de la MRMNH (' + formatearMonedaARS(mrmnh) + ')</b>.';
+        } else if (evalTope.casoAplicado === 'APLICA_TOPE_GREMIAL') {
+          decisionTexto = 'La MRMNH (' + formatearMonedaARS(mrmnh) + ') supera el Tope Gremial, y dicho Tope respeta el piso del 67% (' + formatearMonedaARS(evalTope.piso67) + '). Se aplica el <b>Tope Gremial de ' + formatearMonedaARS(evalTope.baseArt245Efectiva) + '</b> (con garantía de piso mínimo total de 1 MRMNH pura si tuviera solo 1 período).';
+        } else if (evalTope.casoAplicado === 'APLICA_PISO_67_VIZZOTI') {
+          decisionTexto = '<b>Límite del 67% activado (Art. 245 LCT / Doctrina Vizzoti):</b> El Tope Gremial (' + formatearMonedaARS(evalTope.topeCalculado) + ') es inferior al 67% de la MRMNH. Se aplica el <b>Piso Mínimo del 67%: ' + formatearMonedaARS(evalTope.baseArt245Efectiva) + '</b> (con garantía de piso mínimo total de 1 MRMNH pura si tuviera solo 1 período).';
+        }
+
+        boxResumen.innerHTML =
+          '• <strong>Determinación del Tope:</strong> ' + explicacionOrigenTope + '<br>' +
+          '• <strong>Piso mínimo legal garantizado (67% de la MRMNH):</strong> <b>' + formatearMonedaARS(evalTope.piso67) + '</b><br>' +
+          '• <strong>Resolución para Base Art. 245 LCT:</strong> ' + decisionTexto;
+      };
+
+      window.limpiarFormularioCompleto = function() {
+        try { localStorage.removeItem(STORAGE_KEY_UNC); } catch (_e) {}
+        document.getElementById('nombreTrabajador').value = '';
+        document.getElementById('nombreEmpleador').value = '';
+        document.getElementById('chkTrabajadorRegistrado').checked = true;
+        document.getElementById('chkTrabajadorNoRegistrado').checked = false;
+        document.getElementById('mrmnh').value = '';
+        document.getElementById('fechaIngreso').value = '';
+        document.getElementById('fechaEgreso').value = '';
+        document.getElementById('chkAgravamientos').checked = false;
+        document.getElementById('chkAtenuada').checked = false;
+        document.getElementById('porcentajeDiscriminatorio').value = '';
+        document.getElementById('textoCausaOtros').value = '';
+        document.getElementById('fechaAltaEnfermedad').value = '';
+        document.getElementById('fechaFinTutela').value = '';
+        document.getElementById('chkSacSobreVacaciones').checked = false;
+        document.getElementById('chkMultasDerogadas').checked = false;
+        document.getElementById('chkReparacionIntegralPost2024').checked = false;
+        document.getElementById('chkLNE8').checked = false;
+        document.getElementById('chkLNE9').checked = false;
+        document.getElementById('chkLNE10').checked = false;
+        document.getElementById('chkLNE15').checked = false;
+        document.getElementById('chkL25323_1').checked = false;
+        document.getElementById('chkL25323_2').checked = false;
+        document.getElementById('chkArt80LCT').checked = false;
+        document.getElementById('chkTopeGremial').checked = false;
+        document.getElementById('valorInputTope').value = '';
+        document.getElementById('resultsArea').style.display = 'none';
+        window.sincronizarModificadores('');
+        window.actualizarEstiloSacVacaciones();
+        window.aplicarToggleMultas();
+        window.aplicarToggleTopeGremial();
+        window.actualizarPrevisualizacion();
+        window.evaluarPeriodoPruebaYVacaciones();
+        mostrarAlertaPantalla('');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      window.calcularIndemnizacion = function() {
+        mostrarAlertaPantalla('');
+
+        var mrmnh = redondearCentavos(parseMontoARS(document.getElementById('mrmnh').value));
+        var fechaIngresoStr = normalizarFechaISO(document.getElementById('fechaIngreso').value);
+        var fechaEgresoStr = normalizarFechaISO(document.getElementById('fechaEgreso').value);
+        var medioPreaviso = document.getElementById('medioPreaviso').value;
+        var registrado = estaRegistradoElTrabajador();
+        var incluirSacSobreVacaciones = document.getElementById('chkSacSobreVacaciones').checked;
+
+        if (isNaN(mrmnh) || mrmnh <= 0) {
+          mostrarAlertaPantalla('Por favor, ingrese un monto válido en el campo <b>MRMNH</b> del Segmento 1 (por ejemplo: 1.500.000).');
+          return;
+        }
+
+        if (!esFechaCompletaValida(fechaIngresoStr) || !esFechaCompletaValida(fechaEgresoStr)) {
+          mostrarAlertaPantalla('Por favor, complete tanto la <b>Fecha de ingreso</b> como la <b>Fecha de egreso</b> en el Segmento 1.');
+          return;
+        }
+
+        var fechaIngreso = new Date(fechaIngresoStr + 'T00:00:00');
+        var fechaEgreso = new Date(fechaEgresoStr + 'T00:00:00');
+
+        if (fechaEgreso < fechaIngreso) {
+          mostrarAlertaPantalla('Error de coherencia temporal: La <b>Fecha de egreso</b> no puede ser anterior a la <b>Fecha de ingreso</b>.');
+          return;
+        }
+
+        window.actualizarTextoInformativoTopes();
+        window.evaluarVigenciaMultas();
+        window.evaluarPeriodoPruebaYVacaciones();
+        window.guardarEstadoLocal();
+
+        var infoTope = evaluarTopeGremial(mrmnh);
+        if (infoTope.activo && infoTope.invalido) {
+          mostrarAlertaPantalla('Ha activado el <b>Tope Gremial</b> en el Segmento 5. Por favor ingrese un monto válido para el Promedio o el Tope Gremial.');
+          return;
+        }
+
+        var baseRemunerativaArt245 = infoTope.baseArt245Efectiva;
+        var difAntig = calcularDiferenciaFechas(fechaIngreso, fechaEgreso);
+        var anios = difAntig.anios;
+        var meses = difAntig.meses;
+        var dias = difAntig.dias;
+
+        var menorSeisMesesTotal = (anios === 0) && (meses < 6 || (meses === 6 && dias === 0));
+        var aplicaPeriodoPrueba = registrado && menorSeisMesesTotal;
+
+        var fraccionMayorTresMeses = (meses > 3) || (meses === 3 && dias > 0);
+        var periodosArt245 = aplicaPeriodoPrueba ? 0 : (anios + (fraccionMayorTresMeses ? 1 : 0));
+        var indemnizacionArt245Calculada = redondearCentavos(periodosArt245 * baseRemunerativaArt245);
+
+        // Garantía del último párrafo del Art. 245 LCT: Piso mínimo irreductible de 1 mes de MRMNH sin tope
+        var aplicoPisoUnMesArt245 = false;
+        var indemnizacionArt245Pura = indemnizacionArt245Calculada;
+        if (!aplicaPeriodoPrueba && periodosArt245 >= 1 && indemnizacionArt245Pura < mrmnh) {
+          indemnizacionArt245Pura = mrmnh;
+          aplicoPisoUnMesArt245 = true;
+        }
+
+        var explicacionTopePaso = '';
+        var razonamientoTope = '';
+        var resumenTopePDF = 'No aplicado (100% MRMNH sin tope convencional)';
+
+        if (infoTope.activo) {
+          var detalleOrigen = (infoTope.modo === 'promedio')
+            ? ('Promedio salarial CCT ingresado (' + formatearMonedaARS(infoTope.valorIngresado) + ') multiplicado por 3 = Tope Gremial de ' + formatearMonedaARS(infoTope.topeCalculado))
+            : ('Tope Gremial fijo ya establecido ingresado directamente (sin multiplicar por 3) = ' + formatearMonedaARS(infoTope.topeCalculado));
+
+          var notaPisoUnMes = aplicoPisoUnMesArt245
+            ? ('<br>• <b>Garantía de Piso Mínimo de 1 mes de MRMNH (Art. 245 últ. párr. LCT):</b> Como el producto de 1 período por la base reducida (' + formatearMonedaARS(indemnizacionArt245Calculada) + ') resultaba inferior a 1 mes de remuneración normal sin tope, la ley eleva la indemnización base a <b>1 MRMNH pura (' + formatearMonedaARS(mrmnh) + ')</b>.')
+            : '';
+
+          if (infoTope.casoAplicado === 'NO_SUPERA_TOPE') {
+            resumenTopePDF = 'Tope ' + formatearMonedaARS(infoTope.topeCalculado) + ' no superado -> Base 100% MRMNH (' + formatearMonedaARS(baseRemunerativaArt245) + ')';
+            explicacionTopePaso = '<strong>Evaluación del Tope Gremial / Convencional (Art. 245 LCT):</strong><br>• ' + detalleOrigen + '.<br>• Piso mínimo legal (67% de la MRMNH): <b>' + formatearMonedaARS(infoTope.piso67) + '</b>.<br>• Como la MRMNH no supera el Tope Gremial, la base del Art. 245 LCT se mantiene en <b>' + formatearMonedaARS(baseRemunerativaArt245) + '</b>.';
+            razonamientoTope = '<strong>Evaluación de Tope Gremial (Art. 245 LCT):</strong> Se verificó el ' + detalleOrigen + '. Dado que la MRMNH (' + formatearMonedaARS(mrmnh) + ') no supera dicho tope, se toma el 100% de la MRMNH.';
+          } else if (infoTope.casoAplicado === 'APLICA_TOPE_GREMIAL') {
+            resumenTopePDF = aplicoPisoUnMesArt245
+              ? ('Piso Mínimo 1 MRMNH Art. 245 últ. párr. (' + formatearMonedaARS(mrmnh) + ')')
+              : ('Aplicó Tope Gremial de ' + formatearMonedaARS(infoTope.topeCalculado) + ' (supera el piso del 67%: ' + formatearMonedaARS(infoTope.piso67) + ')');
+            explicacionTopePaso = '<strong>Aplicación Efectiva del Tope Gremial / Convencional (Art. 245 LCT):</strong><br>• ' + detalleOrigen + '.<br>• Piso mínimo legal (67% de la MRMNH): <b>' + formatearMonedaARS(infoTope.piso67) + '</b>.<br>• Base Art. 245 LCT fijada en <b>' + formatearMonedaARS(baseRemunerativaArt245) + '</b>.' + notaPisoUnMes;
+            razonamientoTope = '<strong>Aplicación del Tope Gremial (Art. 245 LCT):</strong> Se determinó el ' + detalleOrigen + '. Al superar el piso del 67% de la MRMNH (' + formatearMonedaARS(infoTope.piso67) + '), se fijó la base en ' + formatearMonedaARS(baseRemunerativaArt245) + (aplicoPisoUnMesArt245 ? (', activándose luego la garantía del último párrafo del art. 245 LCT por la cual la indemnización total nunca puede ser inferior a 1 mes completo de MRMNH sin tope (' + formatearMonedaARS(mrmnh) + ').') : '.');
+          } else if (infoTope.casoAplicado === 'APLICA_PISO_67_VIZZOTI') {
+            resumenTopePDF = aplicoPisoUnMesArt245
+              ? ('Piso Mínimo 1 MRMNH Art. 245 últ. párr. (' + formatearMonedaARS(mrmnh) + ')')
+              : ('Tope (' + formatearMonedaARS(infoTope.topeCalculado) + ') inferior al 67% -> Aplicó Piso 67% MRMNH (' + formatearMonedaARS(infoTope.piso67) + ')');
+            explicacionTopePaso = '<strong>Activación de la Garantía del 67% de la MRMNH frente al Tope Gremial (Art. 245 LCT / Doctrina "Vizzoti"):</strong><br>• ' + detalleOrigen + '.<br>• Como la aplicación del tope nunca puede ser menor al 67% de la MRMNH, se aplica el piso de <b>' + formatearMonedaARS(baseRemunerativaArt245) + '</b>.' + notaPisoUnMes;
+            razonamientoTope = '<strong>Garantía del Piso del 67% de la MRMNH frente al Tope Gremial (Art. 245 LCT - Doctrina CSJN "Vizzoti"):</strong> Si bien se calculó el ' + detalleOrigen + ', su aplicación directa perforaría el límite del 67% (' + formatearMonedaARS(infoTope.piso67) + '). Se aplicó como base el piso del 67% de la MRMNH (' + formatearMonedaARS(baseRemunerativaArt245) + ')' + (aplicoPisoUnMesArt245 ? (', y dado que con 1 solo período quedaba por debajo de 1 sueldo mensual normal, operó el piso irreductible de 1 MRMNH entera (' + formatearMonedaARS(mrmnh) + ') del último párrafo del art. 245 LCT.') : '.');
+          }
+        } else {
+          razonamientoTope = '<strong>Determinación de la Base del Art. 245 LCT (Sin Tope Gremial):</strong> Se tomó el 100% de la MRMNH (' + formatearMonedaARS(mrmnh) + ') conforme al art. 245 LCT (Ley 27.802).';
+        }
+
+        // B. Indemnización por Antigüedad, Atenuadas o Incapacidad Absoluta
+        var tieneAtenuada = document.getElementById('chkAtenuada').checked;
+        var claveAtenuada = document.getElementById('selectAtenuada').value;
+        var montoAntiguedad = indemnizacionArt245Pura;
+        var etiquetaNormaAntiguedad = aplicaPeriodoPrueba
+          ? 'Período de Prueba (Art. 92 bis)'
+          : (aplicoPisoUnMesArt245 ? 'Art. 245 últ. párr. (Piso 1 MRMNH)' : (infoTope.activo ? infoTope.etiquetaCorta : 'Art. 245 LCT (100% Plena)'));
+        var explicacionAntiguedad = '';
+        var razonamientoModificador = '';
+        var porcentajeAtenuacionTexto = '0% (Sin atenuación)';
+
+        var mapaAtenuadas = {
+          fuerza_mayor: { nombre: 'Fuerza Mayor no imputable', norma: 'Art. 247 LCT', reduccion: 50, factorPago: 0.50 },
+          razones_economicas: { nombre: 'Razones económicas / Falta o disminución de trabajo', norma: 'Art. 247 LCT', reduccion: 50, factorPago: 0.50 },
+          muerte_empleador: { nombre: 'Muerte del empleador', norma: 'Art. 249 LCT (remite Art. 247)', reduccion: 50, factorPago: 0.50 },
+          muerte_trabajador: { nombre: 'Muerte del trabajador', norma: 'Art. 248 LCT (remite Art. 247)', reduccion: 50, factorPago: 0.50 },
+          quiebra_no_fraudulenta: { nombre: 'Quiebra o concurso no fraudulento', norma: 'Art. 251 LCT (remite Art. 247)', reduccion: 50, factorPago: 0.50 },
+          imposibilidad_reincorporacion: { nombre: 'Imposibilidad de reincorporación (incapacidad parcial)', norma: 'Art. 212 2do párr. LCT', reduccion: 50, factorPago: 0.50 },
+          incapacidad_absoluta: { nombre: 'Extinción por Incapacidad Absoluta del trabajador (≥ 66% T.O.)', norma: 'Art. 212 4to párr. LCT (remite Art. 245)', reduccion: 0, factorPago: 1.00 },
+          inhabilitacion: { nombre: 'Inhabilitación no dolosa ni por culpa grave', norma: 'Art. 254 2do párr. LCT', reduccion: 50, factorPago: 0.50 },
+          plazo_fijo_cumplido: { nombre: 'Vencimiento de contrato a plazo fijo >= 1 año', norma: 'Art. 250 LCT', reduccion: 50, factorPago: 0.50 },
+          rescision_maternidad: { nombre: 'Rescisión tras licencia por maternidad', norma: 'Art. 183 inc. b LCT', reduccion: 75, factorPago: 0.25 },
+          imposibilidad_excedencia: { nombre: 'Imposibilidad de reingreso tras excedencia', norma: 'Art. 184 últ. párr. LCT', reduccion: 75, factorPago: 0.25 }
+        };
+
+        if (aplicaPeriodoPrueba) {
+          montoAntiguedad = 0;
+          explicacionAntiguedad = '<strong>Extinción durante el Período de Prueba aplicada automáticamente (Art. 92 bis LCT - Vínculo Registrado):</strong><br>Al estar la relación registrada y poseer una antigüedad de ' + meses + ' mes(es) y ' + dias + ' día(s) (dentro de los 6 meses legales), la extinción no genera indemnización por antigüedad.<span class="formula-code">Fórmula: Extinción en Período de Prueba (Art. 92 bis LCT) = $ 0,00</span>';
+          razonamientoModificador = '<strong>Aplicación Automática del Período de Prueba (Art. 92 bis LCT):</strong> Atento a que el vínculo se encontraba regularmente registrado y el tiempo de servicio (' + meses + ' mes/es y ' + dias + ' día/s) no superó el plazo legal de prueba de 6 meses, operó automáticamente la eximición de indemnización por antigüedad.';
+        } else if (tieneAtenuada) {
+          var infoAt = mapaAtenuadas[claveAtenuada];
+          montoAntiguedad = redondearCentavos(indemnizacionArt245Pura * infoAt.factorPago);
+          var porcentajeAbonado = infoAt.factorPago * 100;
+          porcentajeAtenuacionTexto = (infoAt.reduccion === 0)
+            ? 'Incapacidad Absoluta Art. 212 4to párr. (Percibe 100% Art. 245, sin preaviso)'
+            : ('Se atenúa un ' + infoAt.reduccion + '% (percibe el ' + porcentajeAbonado + '% del Art. 245 LCT)');
+          etiquetaNormaAntiguedad = (infoAt.reduccion === 0) ? 'Art. 212 4to párr. (100% Art. 245)' : (infoAt.norma + ' (-' + infoAt.reduccion + '%)');
+
+          explicacionAntiguedad = '<strong>' + infoAt.nombre + ' (' + infoAt.norma + '):</strong><br>Percibe el <b>' + porcentajeAbonado + '%</b> de la indemnización del Art. 245 LCT.<span class="formula-code">Fórmula: ' + formatearMonedaARS(indemnizacionArt245Pura) + ' x ' + porcentajeAbonado + '% = ' + formatearMonedaARS(montoAntiguedad) + '</span>';
+          razonamientoModificador = '<strong>Aplicación del Régimen de ' + infoAt.nombre + ' (' + infoAt.norma + '):</strong> Por exclusión mutua con los agravamientos, se liquidó el ' + porcentajeAbonado + '% de la tarifa del Art. 245 LCT (' + formatearMonedaARS(montoAntiguedad) + ').';
+        } else {
+          explicacionAntiguedad = '<strong>Indemnización por Antigüedad (Art. 245 LCT - t.o. Ley 27.802):</strong><br>1 mes de base computable (' + formatearMonedaARS(baseRemunerativaArt245) + ') por cada año de servicio o fracción mayor de 3 meses (' + anios + ' años, ' + meses + ' meses y ' + dias + ' días -> ' + periodosArt245 + ' períodos).' + (aplicoPisoUnMesArt245 ? ' <em>(Elevado al piso mínimo legal de 1 MRMNH pura del último párrafo del Art. 245 LCT)</em>.' : '') + '<span class="formula-code">Fórmula: ' + (aplicoPisoUnMesArt245 ? ('Piso mínimo 1 MRMNH pura = ' + formatearMonedaARS(montoAntiguedad)) : (periodosArt245 + ' períodos x ' + formatearMonedaARS(baseRemunerativaArt245) + ' = ' + formatearMonedaARS(montoAntiguedad))) + '</span>';
+        }
+
+        // C. Preaviso e Integración
+        var superaCincoAnios = (anios > 5) || (anios === 5 && (meses > 0 || dias > 0));
+        var mesesPreavisoLegal = superaCincoAnios ? 2 : 1;
+        var totalDiasMesEgreso = new Date(fechaEgreso.getFullYear(), fechaEgreso.getMonth() + 1, 0).getDate();
+        var diaEgreso = fechaEgreso.getDate();
+        var diasFaltantesMes = totalDiasMesEgreso - diaEgreso;
+
+        var montoPreaviso = 0;
+        var montoIntegracion = 0;
+        var explicacionPreaviso = '';
+        var explicacionIntegracion = '';
+        var razonamientoPreaviso = '';
+
+        var causalSinPreaviso = esCausalSinPreavisoNiIntegracion();
+
+        if (causalSinPreaviso) {
+          var nombreCausalObj = mapaAtenuadas[claveAtenuada].nombre;
+          document.getElementById('normaPreaviso').textContent = 'No procede por causal ($ 0)';
+          document.getElementById('normaIntegracion').textContent = 'No procede por causal ($ 0)';
+          explicacionPreaviso = '<strong>Incompatibilidad de Indemnización por Omisión de Preaviso (' + nombreCausalObj + '):</strong><br>Tratándose de una extinción por hecho natural, biológico, vencimiento de plazo o renuncia/compensación especial, no existe deber de preavisar un despido intempestivo.<span class="formula-code">Fórmula: Improcedente por naturaleza de la causal = $ 0,00</span>';
+          explicacionIntegracion = '<strong>Incompatibilidad de Integración del Mes de Despido (Art. 233 LCT):</strong><br>Al no proceder la indemnización sustitutiva de preaviso por la naturaleza de la extinción, tampoco se devenga integración del mes.<span class="formula-code">Fórmula: Improcedente por naturaleza de la causal = $ 0,00</span>';
+          razonamientoPreaviso = '<strong>Improcedencia Jurídica de Preaviso e Integración (' + nombreCausalObj + '):</strong> Conforme a la doctrina y jurisprudencia pacífica, en los supuestos de extinción por muerte, incapacidad absoluta, quiebra ajena al empleador, cumplimiento de plazo fijo o rescisión por maternidad/excedencia, la finalización del contrato no deriva de un despido intempestivo sin preaviso, razón por la cual los rubros de los arts. 232 y 233 LCT se neutralizan automáticamente en $ 0,00.';
+        } else if (medioPreaviso === 'si') {
+          document.getElementById('normaPreaviso').textContent = 'Preaviso otorgado ($ 0)';
+          document.getElementById('normaIntegracion').textContent = 'No aplica con preaviso ($ 0)';
+          explicacionPreaviso = '<strong>Indemnización Sustitutiva por Omisión de Preaviso (Arts. 231 y 232 LCT):</strong><br>Se indicó que <b>SÍ medió preaviso</b> otorgado por el empleador ($ 0,00).<span class="formula-code">Fórmula: Preaviso otorgado en término = ' + formatearMonedaARS(0) + '</span>';
+          explicacionIntegracion = '<strong>Integración del Mes de Despido (Art. 233 LCT):</strong><br>Habiendo mediado preaviso otorgado, no procede integración del mes de despido ($ 0,00).<span class="formula-code">Fórmula: No procede por mediar preaviso = ' + formatearMonedaARS(0) + '</span>';
+          razonamientoPreaviso = '<strong>Preaviso Otorgado (Arts. 231 a 233 LCT):</strong> Habiéndose otorgado el preaviso legal, no se devengan indemnización sustitutiva ni integración del mes de despido ($ 0,00).';
+        } else if (aplicaPeriodoPrueba) {
+          montoPreaviso = redondearCentavos(mrmnh * 0.5);
+          montoIntegracion = 0;
+          document.getElementById('normaPreaviso').textContent = 'Art. 231 LCT (15 días - Prueba)';
+          document.getElementById('normaIntegracion').textContent = 'Art. 233 LCT ($ 0 en Prueba)';
+          explicacionPreaviso = '<strong>Indemnización Sustitutiva por Omisión de Preaviso en Período de Prueba (Arts. 92 bis y 231 LCT):</strong><br>En el período de prueba el plazo de preaviso es de 15 días (medio sueldo mensual).<span class="formula-code">Fórmula: ' + formatearMonedaARS(mrmnh) + ' / 2 (15 días) = ' + formatearMonedaARS(montoPreaviso) + '</span>';
+          explicacionIntegracion = '<strong>Integración del Mes de Despido (Art. 233 LCT):</strong><br>La integración del mes de despido no procede cuando la extinción se produzca durante el período de prueba.<span class="formula-code">Fórmula: No procede en período de prueba = $ 0,00</span>';
+          razonamientoPreaviso = '<strong>Omisión de Preaviso en Período de Prueba (Arts. 231 y 233 LCT):</strong> Se liquidaron 15 días de preaviso (' + formatearMonedaARS(montoPreaviso) + '), sin integración del mes de despido por expresa exclusión del art. 233 in fine LCT.';
+        } else {
+          montoPreaviso = redondearCentavos(mesesPreavisoLegal * mrmnh);
+          montoIntegracion = (diasFaltantesMes > 0) ? redondearCentavos((mrmnh / totalDiasMesEgreso) * diasFaltantesMes) : 0;
+          document.getElementById('normaPreaviso').textContent = 'Arts. 231/232 (' + mesesPreavisoLegal + (mesesPreavisoLegal > 1 ? ' meses)' : ' mes)');
+          document.getElementById('normaIntegracion').textContent = 'Art. 233 LCT (' + diasFaltantesMes + ' días)';
+          explicacionPreaviso = '<strong>Indemnización Sustitutiva por Omisión de Preaviso (Arts. 231 y 232 LCT - Ley 27.802):</strong><br>No habiendo mediado preaviso y siendo la antigüedad ' + (superaCincoAnios ? 'mayor a 5 años (2 meses)' : 'de hasta 5 años (1 mes)') + '.<span class="formula-code">Fórmula: ' + mesesPreavisoLegal + ' mes(es) x ' + formatearMonedaARS(mrmnh) + ' = ' + formatearMonedaARS(montoPreaviso) + '</span>';
+          explicacionIntegracion = '<strong>Integración del Mes de Despido (Art. 233 LCT):</strong><br>Mes de ' + totalDiasMesEgreso + ' días con egreso el día ' + diaEgreso + ' -> restan <b>' + diasFaltantesMes + ' día(s)</b>.<span class="formula-code">Fórmula: (' + formatearMonedaARS(mrmnh) + ' / ' + totalDiasMesEgreso + ' días) x ' + diasFaltantesMes + ' días = ' + formatearMonedaARS(montoIntegracion) + '</span>';
+          razonamientoPreaviso = '<strong>Omisión de Preaviso e Integración (Arts. 231 a 233 LCT):</strong> Al omitirse el preaviso, se liquidan ' + mesesPreavisoLegal + ' sueldo(s) de sustitutiva (' + formatearMonedaARS(montoPreaviso) + ') más los ' + diasFaltantesMes + ' día(s) faltantes para completar el mes de cese (' + formatearMonedaARS(montoIntegracion) + ').';
+        }
+
+        // D. Remuneraciones Devengadas separadas
+        var haberesDiasTrabajadosMes = redondearCentavos((mrmnh / totalDiasMesEgreso) * diaEgreso);
+        document.getElementById('normaDiasMes').textContent = diaEgreso + ' de ' + totalDiasMesEgreso + ' días trabajados';
+        var explicacionDiasMes = '<strong>Remuneraciones Devengadas del Mes de Cese (Haberes por días trabajados):</strong><br>El cese operó el día <b>' + diaEgreso + '</b> de un mes de <b>' + totalDiasMesEgreso + ' días</b>.<span class="formula-code">Fórmula: (' + formatearMonedaARS(mrmnh) + ' / ' + totalDiasMesEgreso + ' días) x ' + diaEgreso + ' días = ' + formatearMonedaARS(haberesDiasTrabajadosMes) + '</span>';
+
+        var anioEgreso = fechaEgreso.getFullYear();
+        var mesEgreso = fechaEgreso.getMonth();
+        var esPrimerSemestre = mesEgreso < 6;
+        var inicioSemestre = esPrimerSemestre ? new Date(anioEgreso, 0, 1) : new Date(anioEgreso, 6, 1);
+        var finSemestre = esPrimerSemestre ? new Date(anioEgreso, 5, 30) : new Date(anioEgreso, 11, 31);
+
+        var inicioComputoSemestre = (fechaIngreso > inicioSemestre) ? fechaIngreso : inicioSemestre;
+        var unDiaMs = 1000 * 60 * 60 * 24;
+        var diasTrabajadosSemestre = Math.floor((fechaEgreso - inicioComputoSemestre) / unDiaMs) + 1;
+        var totalDiasSemestre = Math.floor((finSemestre - inicioSemestre) / unDiaMs) + 1;
+        var montoSACProporcional = redondearCentavos((mrmnh / 2) * (diasTrabajadosSemestre / totalDiasSemestre));
+
+        document.getElementById('normaSAC').textContent = 'Art. 123 LCT (' + diasTrabajadosSemestre + '/' + totalDiasSemestre + ' días)';
+        var explicacionSAC = '<strong>SAC Proporcional Devengado (Art. 123 LCT — Cálculo Independiente):</strong><br>Proporción del medio aguinaldo por los <b>' + diasTrabajadosSemestre + ' día(s)</b> devengados en el ' + (esPrimerSemestre ? '1.º semestre' : '2.º semestre') + ' sobre ' + totalDiasSemestre + ' días.<span class="formula-code">Fórmula: (' + formatearMonedaARS(mrmnh) + ' / 2) x (' + diasTrabajadosSemestre + ' / ' + totalDiasSemestre + ' días) = ' + formatearMonedaARS(montoSACProporcional) + '</span>';
+
+        var estrictamenteMenorSeisMesesAntigTotal = (anios === 0) && (meses < 6);
+        var valorDiaVacacion = mrmnh / 25;
+        var diasVacacionesProporcionales = 0;
+        var vacacionesPuras = 0;
+        var explicacionVacaciones = '';
+        var textoRazonamientoVacaciones = '';
+
+        if (estrictamenteMenorSeisMesesAntigTotal) {
+          var diasHabilesAuto = contarDiasHabilesEntreFechas(fechaIngreso, fechaEgreso);
+          diasVacacionesProporcionales = diasHabilesAuto / 20;
+          vacacionesPuras = redondearCentavos(valorDiaVacacion * diasVacacionesProporcionales);
+          document.getElementById('normaVacaciones').textContent = 'Art. 153 (1 día c/ 20 -> ' + diasVacacionesProporcionales.toFixed(2) + 'd)';
+          explicacionVacaciones = '<strong>Vacaciones Proporcionales por Antigüedad Menor a Mitad del Año (Art. 153 LCT — Cálculo Automático 1 día cada 20 trabajados):</strong><br>Al poseer el trabajador una antigüedad total en el empleo de ' + meses + ' mes(es) y ' + dias + ' día(s) (inferior a la mitad de los días hábiles del año), le corresponde <b>1 día de descanso por cada 20 días de trabajo efectivo</b> (' + diasHabilesAuto + ' días hábiles trabajados / 20 = <b>' + diasVacacionesProporcionales.toFixed(2) + ' días</b>).<span class="formula-code">Fórmula: (' + formatearMonedaARS(mrmnh) + ' / 25) x (' + diasHabilesAuto + ' días / 20) = ' + formatearMonedaARS(vacacionesPuras) + '</span>';
+          textoRazonamientoVacaciones = 'las Vacaciones Proporcionales calculadas automáticamente bajo la regla del Art. 153 LCT de 1 día de descanso cada 20 días de trabajo efectivo por no alcanzar su antigüedad total en el empleo la mitad de los días hábiles del año (' + diasHabilesAuto + ' días hábiles / 20 = ' + diasVacacionesProporcionales.toFixed(2) + ' días con divisor 25 = ' + formatearMonedaARS(vacacionesPuras) + ')';
+        } else {
+          var finAnioEgreso = new Date(anioEgreso, 11, 31);
+          var antigProyectada31Dic = calcularDiferenciaFechas(fechaIngreso, finAnioEgreso);
+          var aniosAl31Dic = antigProyectada31Dic.anios;
+
+          var escalaDiasVacaciones = 14;
+          if (aniosAl31Dic > 20) escalaDiasVacaciones = 35;
+          else if (aniosAl31Dic > 10) escalaDiasVacaciones = 28;
+          else if (aniosAl31Dic > 5) escalaDiasVacaciones = 21;
+
+          var inicioAnioEgreso = new Date(anioEgreso, 0, 1);
+          var inicioComputoAnio = (fechaIngreso > inicioAnioEgreso) ? fechaIngreso : inicioAnioEgreso;
+          var diasTrabajadosAnio = Math.floor((fechaEgreso - inicioComputoAnio) / unDiaMs) + 1;
+          var totalDiasAnio = Math.floor((finAnioEgreso - inicioAnioEgreso) / unDiaMs) + 1;
+
+          diasVacacionesProporcionales = (escalaDiasVacaciones * diasTrabajadosAnio) / totalDiasAnio;
+          vacacionesPuras = redondearCentavos(valorDiaVacacion * diasVacacionesProporcionales);
+          document.getElementById('normaVacaciones').textContent = 'Art. 150/156 (' + diasVacacionesProporcionales.toFixed(2) + 'd Esc. ' + escalaDiasVacaciones + ')';
+          explicacionVacaciones = '<strong>Vacaciones Proporcionales Devengadas No Gozadas con Antigüedad Proyectada al 31/12 (Arts. 150 penúlt. párr., 155 y 156 LCT):</strong><br>Habiendo superado el trabajador los 6 meses de antigüedad total en el empleo y computando al <b>31/12/' + anioEgreso + '</b> una antigüedad de <b>' + antigProyectada31Dic.anios + ' año(s) y ' + antigProyectada31Dic.meses + ' mes(es)</b>, corresponde la escala de <b>' + escalaDiasVacaciones + ' días</b> proporcional a los ' + diasTrabajadosAnio + '/' + totalDiasAnio + ' días trabajados en el año (-> <b>' + diasVacacionesProporcionales.toFixed(2) + ' días</b>).<span class="formula-code">Fórmula: (' + formatearMonedaARS(mrmnh) + ' / 25) x ' + diasVacacionesProporcionales.toFixed(2) + ' días = ' + formatearMonedaARS(vacacionesPuras) + '</span>';
+          textoRazonamientoVacaciones = 'las Vacaciones Proporcionales No Gozadas puras del Art. 156 LCT, determinando la escala de ' + escalaDiasVacaciones + ' días mediante el cómputo de la antigüedad proyectada al 31 de diciembre del año de cese conforme al art. 150 penúltimo párrafo LCT (' + diasVacacionesProporcionales.toFixed(2) + ' días con divisor 25 = ' + formatearMonedaARS(vacacionesPuras) + ')';
+        }
+
+        var sacSobreVacacionesCalculado = redondearCentavos(vacacionesPuras / 12);
+        var montoSacSobreVacaciones = incluirSacSobreVacaciones ? sacSobreVacacionesCalculado : 0;
+        var explicacionSacVacaciones = '';
+        var razonamientoSacVacaciones = '';
+
+        if (incluirSacSobreVacaciones) {
+          explicacionSacVacaciones = '<strong>Vacaciones Proporcionales Devengadas sobre SAC (Opcional — Criterio poco utilizado en Córdoba):</strong><br>Doceava parte (8,33%) sobre la indemnización por vacaciones proporcionales (' + formatearMonedaARS(vacacionesPuras) + ').<span class="formula-code">Fórmula: ' + formatearMonedaARS(vacacionesPuras) + ' / 12 = ' + formatearMonedaARS(montoSacSobreVacaciones) + '</span>';
+          razonamientoSacVacaciones = 'Asimismo, a pedido expreso del usuario se adicionó el cálculo separado de SAC sobre Vacaciones Proporcionales (' + formatearMonedaARS(montoSacSobreVacaciones) + '), dejándose constancia de que dicho rubro no es de aplicación habitual en los Tribunales del Trabajo de Córdoba.';
+        } else {
+          razonamientoSacVacaciones = 'No se adicionó el rubro de SAC sobre Vacaciones Proporcionales (' + formatearMonedaARS(sacSobreVacacionesCalculado) + '), dado que este tipo de liquidación no se utiliza habitualmente en la práctica forense de Córdoba.';
+        }
+
+        // E. Agravamientos Indemnizatorios
+        var tieneAgravamiento = document.getElementById('chkAgravamientos').checked;
+        var tipoAgravamiento = obtenerCausalAgravamientoSeleccionada();
+        var montoAgravamiento = 0;
+        var etiquetaAgravamiento = '';
+        var explicacionAgravamiento = '';
+
+        if (tieneAgravamiento) {
+          if (tipoAgravamiento === 'embarazo') {
+            montoAgravamiento = redondearCentavos(mrmnh * 13);
+            etiquetaAgravamiento = 'Arts. 178 y 182 LCT (+13 sueldos)';
+            explicacionAgravamiento = '<strong>Agravamiento por Embarazo / Maternidad (Arts. 178 y 182 LCT):</strong><br>1 año de remuneraciones equivalentes a <b>13 MRMNH</b> (12 sueldos + 1 SAC completo).<span class="formula-code">Fórmula: 13 x ' + formatearMonedaARS(mrmnh) + ' = ' + formatearMonedaARS(montoAgravamiento) + '</span>';
+            razonamientoModificador = '<strong>Agravamiento por Embarazo (Arts. 178 y 182 LCT):</strong> Se adicionan 13 sueldos mensuales (12 meses de remuneraciones + 1 SAC anual completo) por despido durante el plazo de protección materna.';
+          } else if (tipoAgravamiento === 'matrimonio') {
+            montoAgravamiento = redondearCentavos(mrmnh * 13);
+            etiquetaAgravamiento = 'Arts. 181 y 182 LCT (+13 sueldos)';
+            explicacionAgravamiento = '<strong>Agravamiento por Matrimonio (Arts. 181 y 182 LCT):</strong><br>1 año de remuneraciones equivalentes a <b>13 MRMNH</b> (12 sueldos + 1 SAC completo).<span class="formula-code">Fórmula: 13 x ' + formatearMonedaARS(mrmnh) + ' = ' + formatearMonedaARS(montoAgravamiento) + '</span>';
+            razonamientoModificador = '<strong>Agravamiento por Matrimonio (Arts. 181 y 182 LCT):</strong> Se adicionan 13 sueldos mensuales (12 meses + 1 SAC anual) por despido dentro del período de presunción legal por matrimonio.';
+          } else if (tipoAgravamiento === 'discriminatorio') {
+            var causaDiscrSel = document.getElementById('causaDiscriminacion').value;
+            var textoOtros = (document.getElementById('textoCausaOtros').value || '').trim();
+            var causaDiscrFinal = (causaDiscrSel === 'Otros')
+              ? ('Otros' + (textoOtros ? (': ' + textoOtros) : ''))
+              : causaDiscrSel;
+
+            var porcDiscrRaw = parseFloat(document.getElementById('porcentajeDiscriminatorio').value);
+            if (isNaN(porcDiscrRaw) || porcDiscrRaw < 50) {
+              mostrarAlertaPantalla('⚠️ En el <b>Despido Discriminatorio (Art. 245 bis LCT)</b> debe colocar manualmente en la casilla en blanco un porcentaje que sea <b>50% o más</b>.');
+              return;
+            }
+
+            var baseParaDiscriminatorio = (indemnizacionArt245Pura > 0) ? indemnizacionArt245Pura : baseRemunerativaArt245;
+            montoAgravamiento = redondearCentavos(baseParaDiscriminatorio * (porcDiscrRaw / 100));
+            etiquetaAgravamiento = 'Art. 245 bis (+' + porcDiscrRaw + '% - ' + causaDiscrSel + ')';
+            explicacionAgravamiento = '<strong>Agravamiento por Despido Discriminatorio (Art. 245 bis LCT):</strong><br>Causa invocada: <b>' + causaDiscrFinal + '</b> (supuestos enunciativos, no taxativos). Porcentaje colocado por el usuario: <b>+' + porcDiscrRaw + '%</b> sobre Art. 245 LCT (' + formatearMonedaARS(baseParaDiscriminatorio) + ').<span class="formula-code">Fórmula: ' + porcDiscrRaw + '% de ' + formatearMonedaARS(baseParaDiscriminatorio) + ' = ' + formatearMonedaARS(montoAgravamiento) + '</span>';
+            razonamientoModificador = '<strong>Despido Discriminatorio (Art. 245 bis LCT):</strong> Encuadrado en motivos de "' + causaDiscrFinal + '" (recordando el carácter meramente enunciativo y no taxativo de las causales legales), se aplicó el incremento regulado en el +' + porcDiscrRaw + '% sobre la indemnización del Art. 245 LCT.';
+          } else if (tipoAgravamiento === 'enfermedad_accidente') {
+            var fechaAltaStr = normalizarFechaISO(document.getElementById('fechaAltaEnfermedad').value);
+            if (!esFechaCompletaValida(fechaAltaStr)) {
+              mostrarAlertaPantalla('Por favor, ingrese una fecha válida de alta médica o cese de licencia en el subpanel de <b>Enfermedad/Accidente (Art. 213 LCT)</b>.');
+              return;
+            }
+            if (!window.verificarEnfermedadPostCarga(true)) return;
+
+            var datosTope = obtenerTopeLicenciaArt208();
+            var fechaAltaObj = new Date(fechaAltaStr + 'T00:00:00');
+            var difLicencia = calcularDiferenciaFechas(fechaEgreso, fechaAltaObj);
+            var mesesLic = (difLicencia.anios * 12) + difLicencia.meses;
+            var diasLic = difLicencia.dias;
+
+            montoAgravamiento = redondearCentavos((mesesLic * mrmnh) + ((mrmnh / 30) * diasLic));
+            etiquetaAgravamiento = 'Art. 213 LCT (' + mesesLic + 'm y ' + diasLic + 'd)';
+            explicacionAgravamiento = '<strong>Agravamiento por Despido en Licencia de Enfermedad/Accidente (Arts. 208 y 213 LCT):</strong><br>Fecha ingresada de alta o fin de licencia: <b>' + formatearFechaLocal(fechaAltaStr) + '</b> -> Restan <b>' + mesesLic + ' mes(es) y ' + diasLic + ' día(s)</b> (dentro del tope máximo legal de ' + datosTope.maxMeses + ' meses).<span class="formula-code">Fórmula: (' + mesesLic + ' meses x ' + formatearMonedaARS(mrmnh) + ') + ((' + formatearMonedaARS(mrmnh) + ' / 30) x ' + diasLic + ' días) = ' + formatearMonedaARS(montoAgravamiento) + '</span>';
+            razonamientoModificador = '<strong>Despido durante Licencia por Enfermedad/Accidente con Control de Coherencia (Arts. 208 y 213 LCT):</strong> Se verificó que la fecha de alta ingresada (' + formatearFechaLocal(fechaAltaStr) + ') respete el límite máximo de ' + datosTope.maxMeses + ' meses del Art. 208 LCT, liquidándose los ' + mesesLic + ' mes(es) y ' + diasLic + ' día(s) restantes.';
+          } else if (tipoAgravamiento === 'tutela_sindical') {
+            var fechaInputStr = normalizarFechaISO(document.getElementById('fechaFinTutela').value);
+            if (!esFechaCompletaValida(fechaInputStr)) {
+              mostrarAlertaPantalla('Por favor, ingrese una fecha válida en el subpanel de <b>Tutela Sindical</b>.');
+              return;
+            }
+            if (!window.verificarTutelaPostCarga(true)) return;
+
+            var datosTopeTutela = obtenerTopeTutelaSindical();
+
+            if (datosTopeTutela.modo === 'CESE_CARGO') {
+              var fechaCeseCargoObj = new Date(fechaInputStr + 'T00:00:00');
+              var fechaVencimientoTutelaObj = new Date(fechaCeseCargoObj.getTime());
+              fechaVencimientoTutelaObj.setFullYear(fechaVencimientoTutelaObj.getFullYear() + 1);
+              var fechaVencimientoISO = dateToISO(fechaVencimientoTutelaObj);
+
+              var difRestante = calcularDiferenciaFechas(fechaEgreso, fechaVencimientoTutelaObj);
+              var mesesRestantes = (difRestante.anios * 12) + difRestante.meses;
+              var diasRestantes = difRestante.dias;
+
+              var salariosTutelaBase = redondearCentavos((mesesRestantes * mrmnh) + ((mrmnh / 30) * diasRestantes));
+              var sacSobreTutela = redondearCentavos(salariosTutelaBase / 12);
+              montoAgravamiento = redondearCentavos(salariosTutelaBase + sacSobreTutela);
+
+              var sueldosEquiv = (montoAgravamiento / mrmnh).toFixed(2);
+              etiquetaAgravamiento = 'Ley 23.551 (' + mesesRestantes + 'm ' + diasRestantes + 'd + SAC)';
+              explicacionAgravamiento = '<strong>Agravamiento por Tutela Sindical + SAC — Trabajador Electo en curso de tutela posmandato (Arts. 48 y 52 Ley 23.551):</strong><br>• Fecha en que cesó su cargo: <b>' + formatearFechaLocal(fechaInputStr) + '</b> | Fin del año de estabilidad: <b>' + formatearFechaLocal(fechaVencimientoISO) + '</b>.<br>• Tiempo restante de tutela: <b>' + mesesRestantes + ' mes(es) y ' + diasRestantes + ' día(s)</b>.<br>• Salarios de tutela: <b>' + formatearMonedaARS(salariosTutelaBase) + '</b> + SAC sobre tutela (/ 12): <b>' + formatearMonedaARS(sacSobreTutela) + '</b> (Equivalente a <b>' + sueldosEquiv + ' salarios</b>).<span class="formula-code">Fórmula: ' + formatearMonedaARS(salariosTutelaBase) + ' (Salarios tutela) + ' + formatearMonedaARS(sacSobreTutela) + ' (SAC proporcional/completo) = ' + formatearMonedaARS(montoAgravamiento) + '</span>';
+              razonamientoModificador = '<strong>Tutela Sindical Posmandato con Incidencia de SAC (Arts. 48 y 52 Ley 23.551):</strong> Habiendo cesado el mandato gremial el ' + formatearFechaLocal(fechaInputStr) + ', la estabilidad posmandato vencía el ' + formatearFechaLocal(fechaVencimientoISO) + '. Se liquidaron los ' + mesesRestantes + ' mes(es) y ' + diasRestantes + ' día(s) restantes (' + formatearMonedaARS(salariosTutelaBase) + ') más su SAC proporcional/completo de ' + formatearMonedaARS(sacSobreTutela) + ', totalizando ' + formatearMonedaARS(montoAgravamiento) + '.';
+            } else {
+              var fechaFinTutelaObj = new Date(fechaInputStr + 'T00:00:00');
+              var difTutela = calcularDiferenciaFechas(fechaEgreso, fechaFinTutelaObj);
+              var mesesRestantesCalendario = (difTutela.anios * 12) + difTutela.meses;
+              var diasRestantesCalendario = difTutela.dias;
+              var mesesExtraAnio = datosTopeTutela.mesesEstabilidadExtra;
+
+              var totalMesesSindical = mesesRestantesCalendario + mesesExtraAnio;
+              var salariosTutelaBase2 = redondearCentavos((totalMesesSindical * mrmnh) + ((mrmnh / 30) * diasRestantesCalendario));
+              var sacSobreTutela2 = redondearCentavos(salariosTutelaBase2 / 12);
+              montoAgravamiento = redondearCentavos(salariosTutelaBase2 + sacSobreTutela2);
+
+              var sueldosEquiv2 = (montoAgravamiento / mrmnh).toFixed(2);
+              var nombreTipoSindical = (datosTopeTutela.tipoCand === 'no_electo')
+                ? 'Candidato No Electo (Arts. 50 y 52 Ley 23.551 — Tutela de 6 meses: cobra lapso restante + 1 año de indemnización + SAC)'
+                : 'Candidato Electo con mandato vigente (Mandato restante + 12 meses estabilidad + SAC)';
+
+              etiquetaAgravamiento = 'Ley 23.551 (' + totalMesesSindical + 'm ' + diasRestantesCalendario + 'd + SAC)';
+              explicacionAgravamiento = '<strong>Agravamiento por Tutela Sindical con Año de Indemnización y SAC (Arts. 48, 50 y 52 Ley 23.551):</strong><br>• Encuadre: <b>' + nombreTipoSindical + '</b>.<br>• Tramo restante hasta el ' + formatearFechaLocal(fechaInputStr) + ': <b>' + mesesRestantesCalendario + ' mes(es) y ' + diasRestantesCalendario + ' día(s)</b> + Indemnización de 1 año adicional (Art. 52 Ley 23.551): <b>12 meses</b> = <b>' + totalMesesSindical + ' mes(es) y ' + diasRestantesCalendario + ' día(s)</b>.<br>• Salarios puros de tutela: <b>' + formatearMonedaARS(salariosTutelaBase2) + '</b> + SAC (/ 12): <b>' + formatearMonedaARS(sacSobreTutela2) + '</b> (Equivalente a <b>' + sueldosEquiv2 + ' salarios</b>).<span class="formula-code">Fórmula: ' + formatearMonedaARS(salariosTutelaBase2) + ' (Salarios tutela + 1 año Art. 52) + ' + formatearMonedaARS(sacSobreTutela2) + ' (SAC s/ tutela) = ' + formatearMonedaARS(montoAgravamiento) + '</span>';
+              razonamientoModificador = '<strong>Tutela Sindical con Inclusión del Año de Indemnización y SAC (Arts. 50 y 52 Ley 23.551):</strong> Encuadrado como "' + nombreTipoSindical + '", se computaron los ' + mesesRestantesCalendario + ' mes(es) y ' + diasRestantesCalendario + ' día(s) faltantes de estabilidad más los 12 meses correspondientes al año de remuneraciones del art. 52 de la Ley 23.551 (' + formatearMonedaARS(salariosTutelaBase2) + '), adicionando el SAC completo y proporcional (' + formatearMonedaARS(sacSobreTutela2) + '), por un total de ' + formatearMonedaARS(montoAgravamiento) + '.';
+            }
+          }
+        }
+
+        if (!aplicaPeriodoPrueba && !tieneAtenuada && !tieneAgravamiento) {
+          razonamientoModificador = '<strong>Régimen Indemnizatorio Ordinario (Sin Agravamientos ni Atenuantes):</strong> Se liquidó el 100% de la tarifa del Art. 245 LCT sobre la base computable de ' + formatearMonedaARS(baseRemunerativaArt245) + (aplicoPisoUnMesArt245 ? (', garantizando el piso mínimo de 1 MRMNH pura (' + formatearMonedaARS(mrmnh) + ') del último párrafo del art. 245 LCT.') : '.');
+        }
+
+        // F. Multas Derogadas / Reparación Integral / Art. 80 LCT
+        var tieneMultas = document.getElementById('chkMultasDerogadas').checked;
+        var esReparacionIntegralPost = document.getElementById('chkReparacionIntegralPost2024').checked && !esCasoAnteriorAlNueveDeJulio2024();
+        var montoMultasTotal = 0;
+        var etiquetaMultas = '';
+        var explicacionMultas = '';
+        var razonamientoMultas = '';
+
+        if (tieneMultas) {
+          if (!window.verificarFechaMultasPostCarga(true)) return;
+
+          var chk8 = document.getElementById('chkLNE8').checked;
+          var chk9 = document.getElementById('chkLNE9').checked;
+          var chk10 = document.getElementById('chkLNE10').checked;
+          var chk15 = document.getElementById('chkLNE15').checked;
+          var chk25323_1 = document.getElementById('chkL25323_1').checked;
+          var chk25323_2 = document.getElementById('chkL25323_2').checked;
+          var chkArt80 = document.getElementById('chkArt80LCT').checked;
+
+          var mesesTotalesVinculo = (anios * 12) + meses + (dias / 30);
+          var baseIndemnizatoriaDespido = redondearCentavos(montoAntiguedad + montoPreaviso + montoIntegracion);
+          var desgloseMultas = [];
+          var etiquetasCortas = [];
+
+          if (chk8) {
+            var m8 = redondearCentavos((mesesTotalesVinculo * mrmnh) * 0.25);
+            montoMultasTotal = redondearCentavos(montoMultasTotal + m8);
+            etiquetasCortas.push('Art. 8 LNE');
+            desgloseMultas.push('• <b>Art. 8 Ley 24.013 (ref. 24.014):</b> 25% sobre ' + mesesTotalesVinculo.toFixed(2) + ' meses devengados = <b>' + formatearMonedaARS(m8) + '</b>.');
+          }
+
+          if (chk9) {
+            var fechaFalsaStr = normalizarFechaISO(document.getElementById('fechaFalsaLNE9').value);
+            if (!esFechaCompletaValida(fechaFalsaStr)) {
+              mostrarAlertaPantalla('Ha seleccionado la multa del <b>Art. 9 de la Ley 24.013/24.014</b>. Ingrese la fecha de ingreso falsamente registrada.');
+              return;
+            }
+            var fFalsa = new Date(fechaFalsaStr + 'T00:00:00');
+            if (fFalsa <= fechaIngreso || fFalsa > fechaEgreso) {
+              mostrarAlertaPantalla('La fecha de ingreso falsamente registrada (Art. 9) debe ser posterior a la fecha real de ingreso y no superar la fecha de egreso.');
+              return;
+            }
+            var dif9 = calcularDiferenciaFechas(fechaIngreso, fFalsa);
+            var mesesOmitidos9 = (dif9.anios * 12) + dif9.meses + (dif9.dias / 30);
+            var m9 = redondearCentavos((mesesOmitidos9 * mrmnh) * 0.25);
+            montoMultasTotal = redondearCentavos(montoMultasTotal + m9);
+            etiquetasCortas.push('Art. 9 LNE');
+            desgloseMultas.push('• <b>Art. 9 Ley 24.013 (ref. 24.014):</b> 25% sobre ' + mesesOmitidos9.toFixed(2) + ' meses no registrados = <b>' + formatearMonedaARS(m9) + '</b>.');
+          }
+
+          if (chk10) {
+            var remFalsa = parseMontoARS(document.getElementById('remuneracionFalsaLNE10').value);
+            if (isNaN(remFalsa) || remFalsa < 0 || remFalsa >= mrmnh) {
+              mostrarAlertaPantalla('Ha seleccionado la multa del <b>Art. 10 de la Ley 24.013/24.014</b>. Ingrese una remuneración falsamente registrada menor a la MRMNH real.');
+              return;
+            }
+            var difSalarial = mrmnh - remFalsa;
+            var m10 = redondearCentavos((mesesTotalesVinculo * difSalarial) * 0.25);
+            montoMultasTotal = redondearCentavos(montoMultasTotal + m10);
+            etiquetasCortas.push('Art. 10 LNE');
+            desgloseMultas.push('• <b>Art. 10 Ley 24.013 (ref. 24.014):</b> 25% de la diferencia salarial no registrada = <b>' + formatearMonedaARS(m10) + '</b>.');
+          }
+
+          if (chk15) {
+            var m15 = baseIndemnizatoriaDespido;
+            montoMultasTotal = redondearCentavos(montoMultasTotal + m15);
+            etiquetasCortas.push('Art. 15 LNE');
+            desgloseMultas.push('• <b>Art. 15 Ley 24.013 (ref. 24.014):</b> Duplicación de indemnizaciones por despido (Arts. 245 + 232 + 233) = <b>' + formatearMonedaARS(m15) + '</b>.');
+          }
+
+          if (chk25323_1) {
+            var m25323_1 = montoAntiguedad;
+            montoMultasTotal = redondearCentavos(montoMultasTotal + m25323_1);
+            etiquetasCortas.push('Art. 1 L.25323');
+            desgloseMultas.push('• <b>Art. 1 Ley 25.323:</b> Incremento del 100% sobre la indemnización del Art. 245 LCT = <b>' + formatearMonedaARS(m25323_1) + '</b>.');
+          }
+
+          if (chk25323_2) {
+            var m25323_2 = redondearCentavos(baseIndemnizatoriaDespido * 0.50);
+            montoMultasTotal = redondearCentavos(montoMultasTotal + m25323_2);
+            etiquetasCortas.push('Art. 2 L.25323');
+            desgloseMultas.push('• <b>Art. 2 Ley 25.323:</b> Incremento del 50% sobre las indemnizaciones de los arts. 245, 232 y 233 LCT = <b>' + formatearMonedaARS(m25323_2) + '</b>.');
+          }
+
+          if (chkArt80) {
+            var m80 = redondearCentavos(mrmnh * 3);
+            montoMultasTotal = redondearCentavos(montoMultasTotal + m80);
+            etiquetasCortas.push('Art. 80 LCT');
+            desgloseMultas.push('• <b>Art. 80 LCT (Falta de entrega de certificados de trabajo):</b> 3 x MRMNH = <b>' + formatearMonedaARS(m80) + '</b>.');
+          }
+
+          if (desgloseMultas.length > 0) {
+            etiquetaMultas = etiquetasCortas.join(' + ') + (esReparacionIntegralPost ? ' (Rep. Integral)' : '');
+            var tituloMultas = esReparacionIntegralPost
+              ? 'Sanciones Cuantificadas vía Reparación Integral de Daños / Inconstitucionalidad (Caso Post-09/07/2024):'
+              : 'Multas e Incrementos Indemnizatorios Derogados (Aplicación por despido/intimación anterior al 09/07/2024):';
+            explicacionMultas = '<strong>' + tituloMultas + '</strong><br>' + desgloseMultas.join('<br>') + '<span class="formula-code">Total Rubros Sancionatorios = ' + formatearMonedaARS(montoMultasTotal) + '</span>';
+
+            razonamientoMultas = esReparacionIntegralPost
+              ? ('<li><strong>6. Reclamo de Rubros Sancionatorios vía Reparación Integral (Fecha posterior al 09/07/2024):</strong> Si bien la extinción operó con posterioridad al 09/07/2024, el usuario habilitó la cuantificación de las sanciones (' + etiquetasCortas.join(' + ') + ') como pauta objetiva para reclamar la reparación integral de los daños derivados de la clandestinidad registral o falta de pago en término, respetando la no acumulación entre la Ley 24.013 y la Ley 25.323, por un total de ' + formatearMonedaARS(montoMultasTotal) + '.</li>')
+              : ('<li><strong>6. Aplicación Temporal de Multas Derogadas (Caso anterior al 09/07/2024):</strong> Atento a que la extinción o la intimación fehaciente se configuró antes del 9 de julio de 2024, resulta aplicable el régimen sancionatorio vigente al momento de los hechos (' + etiquetaMultas + '), acumulando de modo coherente las sanciones de la Ley 24.013 entre sí y excluyendo su acumulación con la Ley 25.323, por un total de ' + formatearMonedaARS(montoMultasTotal) + '.</li>');
+          }
+        }
+
+        // G. Total Final redondeado exactamente a centavos y Barra de Composición
+        var bloqueIndemBase = redondearCentavos(montoAntiguedad + montoPreaviso + montoIntegracion);
+        var bloqueDevengados = redondearCentavos(haberesDiasTrabajadosMes + montoSACProporcional + vacacionesPuras + montoSacSobreVacaciones);
+        var bloqueExtra = redondearCentavos(montoAgravamiento + montoMultasTotal);
+        var totalFinal = redondearCentavos(bloqueIndemBase + bloqueDevengados + bloqueExtra);
+
+        if (totalFinal > 0) {
+          var pInd = ((bloqueIndemBase / totalFinal) * 100).toFixed(1);
+          var pDev = ((bloqueDevengados / totalFinal) * 100).toFixed(1);
+          var pExt = ((bloqueExtra / totalFinal) * 100).toFixed(1);
+          document.getElementById('barSegIndem').style.width = pInd + '%';
+          document.getElementById('barSegDeven').style.width = pDev + '%';
+          document.getElementById('barSegExtra').style.width = pExt + '%';
+          document.getElementById('lblPorcIndem').textContent = 'Indemnizaciones Base: ' + pInd + '%';
+          document.getElementById('lblPorcDeven').textContent = 'Rubros Devengados: ' + pDev + '%';
+          document.getElementById('lblPorcExtra').textContent = 'Agravamientos / Sanciones: ' + pExt + '%';
+        }
+
+        document.getElementById('montoTotal').textContent = formatearMonedaARS(totalFinal);
+        var subNominalEl = document.getElementById('subMontoNominal');
+        if (infoTope.activo) {
+          document.getElementById('labelBannerTotal').textContent = 'Resultado Total de la Liquidación (Con Evaluación de Tope Gremial Art. 245 LCT)';
+          subNominalEl.style.display = 'block';
+          subNominalEl.textContent = 'MRMNH original: ' + formatearMonedaARS(mrmnh) + ' | Tope Gremial: ' + formatearMonedaARS(infoTope.topeCalculado) + ' | Piso 67% MRMNH: ' + formatearMonedaARS(infoTope.piso67) + ' -> Base Art. 245: ' + formatearMonedaARS(aplicoPisoUnMesArt245 ? mrmnh : baseRemunerativaArt245);
+        } else {
+          document.getElementById('labelBannerTotal').textContent = 'Resultado Total de la Liquidación (Indemnizaciones + Remuneraciones Devengadas)';
+          subNominalEl.style.display = 'none';
+        }
+
+        document.getElementById('parcialAntiguedad').textContent = formatearMonedaARS(montoAntiguedad);
+        document.getElementById('normaAntiguedad').textContent = etiquetaNormaAntiguedad;
+        document.getElementById('parcialPreaviso').textContent = formatearMonedaARS(montoPreaviso);
+        document.getElementById('parcialIntegracion').textContent = formatearMonedaARS(montoIntegracion);
+        document.getElementById('parcialDiasMes').textContent = formatearMonedaARS(haberesDiasTrabajadosMes);
+        document.getElementById('parcialSAC').textContent = formatearMonedaARS(montoSACProporcional);
+        document.getElementById('parcialVacaciones').textContent = formatearMonedaARS(vacacionesPuras);
+
+        var cardSacVac = document.getElementById('cardParcialSacVacaciones');
+        if (incluirSacSobreVacaciones) {
+          cardSacVac.style.display = 'block';
+          document.getElementById('parcialSacVacaciones').textContent = formatearMonedaARS(montoSacSobreVacaciones);
+        } else {
+          cardSacVac.style.display = 'none';
+        }
+
+        var cardAgrav = document.getElementById('cardParcialAgravamiento');
+        if (tieneAgravamiento) {
+          cardAgrav.style.display = 'block';
+          document.getElementById('parcialAgravamiento').textContent = formatearMonedaARS(montoAgravamiento);
+          document.getElementById('normaAgravamiento').textContent = etiquetaAgravamiento;
+        } else {
+          cardAgrav.style.display = 'none';
+        }
+
+        var cardMultas = document.getElementById('cardParcialMultas');
+        if (tieneMultas && montoMultasTotal > 0) {
+          cardMultas.style.display = 'block';
+          document.getElementById('parcialMultas').textContent = formatearMonedaARS(montoMultasTotal);
+          document.getElementById('normaMultas').textContent = etiquetaMultas;
+        } else {
+          cardMultas.style.display = 'none';
+        }
+
+        var contenedorFormulas = document.getElementById('detalleFormulas');
+        contenedorFormulas.innerHTML =
+          '<div class="formula-step"><strong>1. Cómputo de Antigüedad, Registración y Remuneración (MRMNH):</strong><br>Ingreso: <b>' + formatearFechaLocal(fechaIngresoStr) + '</b> | Egreso: <b>' + formatearFechaLocal(fechaEgresoStr) + '</b>.<br>Tiempo de servicio: <b>' + anios + ' año(s), ' + meses + ' mes(es) y ' + dias + ' día(s)</b> (' + periodosArt245 + ' período/s). Estado: <b>' + (registrado ? 'Registrado' : 'No registrado (en negro)') + '</b>. MRMNH: <b>' + formatearMonedaARS(mrmnh) + '</b>.</div>' +
+          (infoTope.activo ? ('<div class="formula-step">' + explicacionTopePaso + '</div>') : '') +
+          '<div class="formula-step">2. ' + explicacionAntiguedad + '</div>' +
+          '<div class="formula-step">3. ' + explicacionPreaviso + '</div>' +
+          '<div class="formula-step">4. ' + explicacionIntegracion + '</div>' +
+          '<div class="formula-step">5. ' + explicacionDiasMes + '</div>' +
+          '<div class="formula-step">6. ' + explicacionSAC + '</div>' +
+          '<div class="formula-step">7. ' + explicacionVacaciones + '</div>' +
+          (incluirSacSobreVacaciones ? ('<div class="formula-step">8. ' + explicacionSacVacaciones + '</div>') : '') +
+          (tieneAgravamiento ? ('<div class="formula-step">9. ' + explicacionAgravamiento + '</div>') : '') +
+          ((tieneMultas && montoMultasTotal > 0) ? ('<div class="formula-step">10. ' + explicacionMultas + '</div>') : '') +
+          '<div class="formula-step"><strong>Sumatoria Final de Rubros Liquidados (Redondeo exacto al centavo):</strong><span class="formula-code">Total = ' + formatearMonedaARS(montoAntiguedad) + ' (Antigüedad) + ' + formatearMonedaARS(montoPreaviso) + ' (Preaviso) + ' + formatearMonedaARS(montoIntegracion) + ' (Integración) + ' + formatearMonedaARS(haberesDiasTrabajadosMes) + ' (Remun. Mes) + ' + formatearMonedaARS(montoSACProporcional) + ' (SAC Prop.) + ' + formatearMonedaARS(vacacionesPuras) + ' (Vacaciones Puras)' + (incluirSacSobreVacaciones ? (' + ' + formatearMonedaARS(montoSacSobreVacaciones) + ' (SAC s/ Vacaciones)') : '') + (tieneAgravamiento ? (' + ' + formatearMonedaARS(montoAgravamiento) + ' (Agravamiento)') : '') + ((tieneMultas && montoMultasTotal > 0) ? (' + ' + formatearMonedaARS(montoMultasTotal) + ' (Multas/Sanciones)') : '') + ' = ' + formatearMonedaARS(totalFinal) + '</span></div>';
+
+        var contenedorRazonamiento = document.getElementById('detalleRazonamiento');
+        contenedorRazonamiento.innerHTML =
+          '<ul class="reasoning-list">' +
+            '<li>1. ' + razonamientoTope + '</li>' +
+            '<li><strong>2. Antigüedad, Estado Registral y Detección Automática del Período de Prueba (Arts. 92 bis y 245 LCT):</strong> El vínculo laboral duró ' + anios + ' año(s), ' + meses + ' mes(es) y ' + dias + ' día(s), encontrándose ' + (registrado ? 'registrado regularmente' : 'no registrado ("en negro"), razón por la cual el empleador pierde de pleno derecho el período de prueba del art. 92 bis LCT') + '. En función de ello, el sistema computó automáticamente ' + periodosArt245 + ' período(s) indemnizables.</li>' +
+            '<li>3. ' + razonamientoPreaviso + '</li>' +
+            '<li><strong>4. Desglose Independiente de Remuneraciones Devengadas y Regla Automática de Vacaciones (Arts. 123, 150, 153 y 156 LCT):</strong> Se liquidaron en forma separada las remuneraciones devengadas por los ' + diaEgreso + ' días trabajados del mes de cese (' + formatearMonedaARS(haberesDiasTrabajadosMes) + '), el SAC Proporcional del semestre del Art. 123 LCT (' + diasTrabajadosSemestre + ' días = ' + formatearMonedaARS(montoSACProporcional) + ') y ' + textoRazonamientoVacaciones + '. ' + razonamientoSacVacaciones + '</li>' +
+            '<li>5. ' + razonamientoModificador + '</li>' +
+            razonamientoMultas +
+          '</ul>';
+
+        var nodosLi = contenedorRazonamiento.querySelectorAll('li');
+        var itemsRazonamientoArray = [];
+        for (var k = 0; k < nodosLi.length; k++) {
+          itemsRazonamientoArray.push(nodosLi[k].innerText.replace(/\s+/g, ' ').trim());
+        }
+
+        var trabNombre = (document.getElementById('nombreTrabajador').value || '').trim();
+        var empNombre = (document.getElementById('nombreEmpleador').value || '').trim();
+        var caratulaTexto = (trabNombre || empNombre)
+          ? ('Autos: "' + (trabNombre || 'Trabajador') + ' c/ ' + (empNombre || 'Empleador') + ' s/ Liquidación Laboral"')
+          : 'Sin carátula nominal especificada';
+
+        ultimaLiquidacion = {
+          caratula: caratulaTexto,
+          estadoRegistral: registrado ? 'Vínculo Registrado' : 'Vínculo No Registrado (En negro)',
+          mrmnh: formatearMonedaARS(mrmnh),
+          baseArt245Efectiva: formatearMonedaARS(aplicoPisoUnMesArt245 ? mrmnh : baseRemunerativaArt245),
+          resumenTopePDF: resumenTopePDF,
+          fechaIngreso: formatearFechaLocal(fechaIngresoStr),
+          fechaEgreso: formatearFechaLocal(fechaEgresoStr),
+          antiguedadDetalle: anios + ' año(s), ' + meses + ' mes(es) y ' + dias + ' día(s) (' + periodosArt245 + ' períodos)',
+          medioPreaviso: causalSinPreaviso ? 'Improcedente por naturaleza de la causal ($ 0)' : ((medioPreaviso === 'si') ? 'Sí medió preaviso otorgado' : 'No medió preaviso (omitido)'),
+          porcentajeAtenuacion: tieneAtenuada ? porcentajeAtenuacionTexto : 'No aplica (100% Art. 245)',
+          rubroAntiguedad: formatearMonedaARS(montoAntiguedad),
+          normaAntiguedad: etiquetaNormaAntiguedad,
+          rubroPreaviso: formatearMonedaARS(montoPreaviso),
+          normaPreaviso: document.getElementById('normaPreaviso').textContent,
+          rubroIntegracion: formatearMonedaARS(montoIntegracion),
+          normaIntegracion: document.getElementById('normaIntegracion').textContent,
+          rubroDiasMes: formatearMonedaARS(haberesDiasTrabajadosMes),
+          normaDiasMes: document.getElementById('normaDiasMes').textContent,
+          rubroSAC: formatearMonedaARS(montoSACProporcional),
+          normaSAC: document.getElementById('normaSAC').textContent,
+          rubroVacaciones: formatearMonedaARS(vacacionesPuras),
+          normaVacaciones: document.getElementById('normaVacaciones').textContent,
+          incluirSacVacaciones: incluirSacSobreVacaciones,
+          rubroSacVacaciones: formatearMonedaARS(montoSacSobreVacaciones),
+          normaSacVacaciones: 'Art. 156 / 12 (Opcional Cba.)',
+          tieneAgravamiento: tieneAgravamiento,
+          rubroAgravamiento: formatearMonedaARS(montoAgravamiento),
+          normaAgravamiento: etiquetaAgravamiento,
+          tieneMultas: tieneMultas && montoMultasTotal > 0,
+          rubroMultas: formatearMonedaARS(montoMultasTotal),
+          normaMultas: etiquetaMultas,
+          total: formatearMonedaARS(totalFinal),
+          puntosRazonamiento: itemsRazonamientoArray
+        };
+
+        var areaRes = document.getElementById('resultsArea');
+        areaRes.style.display = 'block';
+        try { areaRes.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+      };
+
+      // Generación de PDF con ajuste multilínea dinámico en filas largas
+      window.descargarPDF = function() {
+        if (!ultimaLiquidacion) {
+          mostrarAlertaPantalla('Primero debe presionar "Calcular Liquidación" para poder descargar el PDF.');
+          return;
+        }
+
+        var inputNombre = document.getElementById('nombreArchivoPDF');
+        var nombreElegido = (inputNombre && inputNombre.value.trim()) ? inputNombre.value.trim() : 'Liquidacion_Indemnizatoria_DTSS_CatB_UNC';
+        if (nombreElegido.toLowerCase().slice(-4) !== '.pdf') {
+          nombreElegido += '.pdf';
+        }
+
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+          document.title = nombreElegido.replace('.pdf', '');
+          window.print();
+          return;
+        }
+
+        var jsPDF = window.jspdf.jsPDF;
+        var doc = new jsPDF({ unit: 'mm', format: 'a4' });
+        var y = 14;
+
+        function controlSaltoPagina(espacioNecesario) {
+          if (y + espacioNecesario > 278) {
+            doc.addPage();
+            y = 18;
+          }
+        }
+
+        doc.setFillColor(125, 67, 82);
+        doc.rect(0, 0, 210, 8, 'F');
+
+        doc.setFont('times', 'bold');
+        doc.setFontSize(12.5);
+        doc.setTextColor(34, 41, 48);
+        doc.text('Calculadora de Indemnizaciones DTSS Cat B 2026 FD UNC', 15, y);
+        y += 4.8;
+
+        doc.setFont('times', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(125, 67, 82);
+        doc.text('Hecho por Saavedra, Bruno Tomás — Práctico 2do Parcial Dr. Paz', 15, y);
+        y += 4.6;
+
+        doc.setFont('times', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(94, 107, 120);
+        doc.text(ultimaLiquidacion.caratula + ' | ' + ultimaLiquidacion.estadoRegistral, 15, y);
+        y += 4.5;
+
+        doc.setDrawColor(216, 212, 204);
+        doc.line(15, y, 195, y);
+        y += 6;
+
+        doc.setFont('times', 'bold');
+        doc.setFontSize(10.5);
+        doc.setTextColor(61, 82, 101);
+        doc.text('1. PARÁMETROS BASE Y EVALUACIÓN DEL TOPE GREMIAL (ART. 245 LCT)', 15, y);
+        y += 5;
+
+        doc.setFont('times', 'normal');
+        doc.setFontSize(9.2);
+        doc.setTextColor(34, 41, 48);
+        doc.text('• MRMNH declarada: ' + ultimaLiquidacion.mrmnh + '   |   Base Art. 245 aplicada: ' + ultimaLiquidacion.baseArt245Efectiva, 18, y); y += 4.6;
+        doc.text('• Tope Gremial / Piso 67%: ' + ultimaLiquidacion.resumenTopePDF, 18, y); y += 4.6;
+        doc.text('• Fecha de Ingreso: ' + ultimaLiquidacion.fechaIngreso + '   |   Fecha de Egreso: ' + ultimaLiquidacion.fechaEgreso, 18, y); y += 4.6;
+        doc.text('• Antigüedad calculada: ' + ultimaLiquidacion.antiguedadDetalle, 18, y); y += 4.6;
+        doc.text('• Estado del Preaviso: ' + ultimaLiquidacion.medioPreaviso, 18, y); y += 4.6;
+        doc.text('• Modificador s/ Art. 245: ' + ultimaLiquidacion.porcentajeAtenuacion, 18, y); y += 6.8;
+
+        doc.setFont('times', 'bold');
+        doc.setFontSize(10.5);
+        doc.setTextColor(61, 82, 101);
+        doc.text('2. DESGLOSE LIQUIDATORIO ÍTEM POR ÍTEM', 15, y);
+        y += 5.8;
+
+        var items = [
+          ['Indemnización por Antigüedad / Base', ultimaLiquidacion.normaAntiguedad, ultimaLiquidacion.rubroAntiguedad],
+          ['Indemnización Sustitutiva por Omisión de Preaviso', ultimaLiquidacion.normaPreaviso, ultimaLiquidacion.rubroPreaviso],
+          ['Integración del Mes de Despido', ultimaLiquidacion.normaIntegracion, ultimaLiquidacion.rubroIntegracion],
+          ['Remuneraciones Devengadas del Mes de Cese', ultimaLiquidacion.normaDiasMes, ultimaLiquidacion.rubroDiasMes],
+          ['SAC Proporcional Devengado', ultimaLiquidacion.normaSAC, ultimaLiquidacion.rubroSAC],
+          ['Vacaciones Proporcionales Devengadas No Gozadas (Puras)', ultimaLiquidacion.normaVacaciones, ultimaLiquidacion.rubroVacaciones]
+        ];
+
+        if (ultimaLiquidacion.incluirSacVacaciones) {
+          items.push(['Vacaciones Proporcionales sobre SAC (Opcional Cba.)', ultimaLiquidacion.normaSacVacaciones, ultimaLiquidacion.rubroSacVacaciones]);
+        }
+        if (ultimaLiquidacion.tieneAgravamiento) {
+          items.push(['Agravamiento Indemnizatorio Especial', ultimaLiquidacion.normaAgravamiento, ultimaLiquidacion.rubroAgravamiento]);
+        }
+        if (ultimaLiquidacion.tieneMultas) {
+          items.push(['Multas / Sanciones Incluidas', ultimaLiquidacion.normaMultas, ultimaLiquidacion.rubroMultas]);
+        }
+
+        doc.setFont('times', 'normal');
+        doc.setFontSize(9);
+        for (var i = 0; i < items.length; i++) {
+          var fila = items[i];
+          var textoIzquierdo = fila[0] + ' (' + fila[1] + ')';
+          var lineasIzq = doc.splitTextToSize(textoIzquierdo, 132);
+          var altoCajaFila = Math.max(6, (lineasIzq.length * 4.2) + 1.8);
+
+          controlSaltoPagina(altoCajaFila + 2);
+          doc.setFillColor(246, 245, 242);
+          doc.rect(15, y - 4, 180, altoCajaFila, 'F');
+          doc.setTextColor(34, 41, 48);
+          doc.text(lineasIzq, 17, y);
+          doc.setFont('times', 'bold');
+          doc.text(fila[2], 192, y, { align: 'right' });
+          doc.setFont('times', 'normal');
+          y += altoCajaFila + 1.2;
+        }
+
+        y += 2;
+        controlSaltoPagina(13);
+        doc.setFillColor(226, 237, 230);
+        doc.setDrawColor(92, 128, 105);
+        doc.rect(15, y - 4, 180, 9.5, 'FD');
+        doc.setFont('times', 'bold');
+        doc.setFontSize(11.5);
+        doc.setTextColor(125, 67, 82);
+        doc.text('RESULTADO TOTAL DE LA LIQUIDACIÓN:', 18, y + 1.8);
+        doc.text(ultimaLiquidacion.total, 192, y + 1.8, { align: 'right' });
+        y += 12;
+
+        controlSaltoPagina(18);
+        doc.setFont('times', 'bold');
+        doc.setFontSize(10.5);
+        doc.setTextColor(61, 82, 101);
+        doc.text('3. EXPLICACIÓN JURÍDICA Y CRITERIO APLICADO (FUNDAMENTACIÓN DE LOS CÁLCULOS)', 15, y);
+        y += 5.5;
+
+        doc.setFont('times', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(34, 41, 48);
+
+        for (var j = 0; j < ultimaLiquidacion.puntosRazonamiento.length; j++) {
+          var puntoTexto = ultimaLiquidacion.puntosRazonamiento[j];
+          var lineasPunto = doc.splitTextToSize('• ' + puntoTexto, 176);
+          var altoBloque = (lineasPunto.length * 4.1) + 2.5;
+          controlSaltoPagina(altoBloque);
+          doc.text(lineasPunto, 17, y);
+          y += altoBloque;
+        }
+
+        controlSaltoPagina(18);
+        y += 2;
+        doc.setDrawColor(184, 143, 86);
+        doc.line(15, y, 195, y);
+        y += 4.5;
+        doc.setFont('times', 'italic');
+        doc.setFontSize(7.8);
+        doc.setTextColor(94, 107, 120);
+        var textoDisclaimer = 'AVISO LEGAL Y EXENCIÓN DE RESPONSABILIDAD: El creador (Saavedra, Bruno Tomás - Contacto: tomas.saavedra.048@mi.unc.edu.ar) queda eximido de toda responsabilidad ante eventuales errores de cálculo. Todo resultado arrojado por esta aplicación es orientativo y requiere obligatoriamente su posterior control humano profesional, ya que no reemplaza la labor legal que realiza un abogado.';
+        doc.text(doc.splitTextToSize(textoDisclaimer, 180), 15, y);
+
+        doc.save(nombreElegido);
+      };
+
+      // Restaurar datos guardados si el navegador del celular se recargó
+      restaurarEstadoLocal();
+
+      Object.freeze(window.calcularIndemnizacion);
+      Object.freeze(window.descargarPDF);
+    })();
+  </script>
+</body>
+</html>
